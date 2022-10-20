@@ -66,5 +66,7 @@ func AdminHandlers(base *gin.RouterGroup) {
 		// Admin user endpoints
 		_admin.GET("/users", admin.AllUsers)
 		_admin.PUT("/user", admin.UpdateUser)
+
+		_admin.POST("register", admin.Register)
 	} // end of admin endpoints
 }
