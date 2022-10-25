@@ -14,7 +14,29 @@ type AuthClaims struct {
 	Sub       string
 }
 
-func MintToken(tokenType, hostname string) (string, error) {
+// New creates and returns a Vela service capable of
+// integrating with the configured scm provider.
+//
+// Currently the following scm providers are supported:
+//
+// * Github
+// .
+func New(s *Setup) (Service, error) {
+	// validate the setup being provided
+	//
+	// https://pkg.go.dev/github.com/go-vela/server/scm?tab=doc#Setup.Validate
+	//err := s.Validate()
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	logrus.Debug("creating tokenManager service from setup")
+
+
+	return s.Tokenmanager()
+}
+
+func MintToken(ctx context.Context, tokenType, hostname string) (string, error) {
 
 	//pull priv key from postgres
 	var tk *jwt.Token
@@ -46,7 +68,7 @@ func MintToken(tokenType, hostname string) (string, error) {
 }
 
 // validateToken validates a token using the public key
-func ValidateToken(token string) (*AuthClaims, error) {
+func ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
 
 	//pull pub key from postgres (or use priv key and derive pub)
 
@@ -92,8 +114,8 @@ func parseAuthClaims(token *jwt.Token) (*AuthClaims, error) {
 	}, nil
 }
 
-// func invalidateToken(){
-//
-//   //drop in invalidation db
-//
-// }
+func InvalidateToken(ctx context.Context, token string) error{
+
+  //drop in invalidation db
+
+}
