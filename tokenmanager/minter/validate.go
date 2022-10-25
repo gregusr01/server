@@ -13,7 +13,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 	//pull pub key from postgres (or use priv key and derive pub)
 
 	tkn, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return key, nil
+		return c.config.PubKey, nil
 	})
 	if err != nil {
 		return nil, errors.New("failed parsing: " + err.Error())

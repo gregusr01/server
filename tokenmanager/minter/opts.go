@@ -34,6 +34,42 @@ func WithAuthTokenDuration(tokenDuration time.Duration) ClientOpt {
 	}
 }
 
+// WithTokenDuration sets the token duration in the secret client for Vault.
+func WithPrivKey(privKey *rsa.PrivateKey) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring token duration in vault secret client")
+
+		// set the token duration in the vault client
+		c.config.PrivKey = privKey
+
+		return nil
+	}
+}
+
+// WithTokenDuration sets the token duration in the secret client for Vault.
+func WithPubKey(pubKey *rsa.PublicKey) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring token duration in vault secret client")
+
+		// set the token duration in the vault client
+		c.config.PubKey = pubKey
+
+		return nil
+	}
+}
+
+// WithTokenDuration sets the token duration in the secret client for Vault.
+func WithSignMethod(signingMethod SigningMethod) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring token duration in vault secret client")
+
+		// set the token duration in the vault client
+		c.config.SignMethod = signingMethod
+
+		return nil
+	}
+}
+
 
 // WithDatabase sets the Vela database service in the secret client for Native.
 func WithDatabase(d database.Service) ClientOpt {

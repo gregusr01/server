@@ -1,13 +1,16 @@
 package minter
 
 type config struct {
+  PrivKey *rsa.PrivateKey //Private Key Used to Sign Token
+  PubKey *rsa.PublicKey //Public Key Used to Validate Token
+  SignMethod SigningMethod //Token SigningMethod
   RegTokenDuration time.Duration
   AuthTokenDuration time.Duration
 }
 
 type client struct {
 	config  *config
-  Database database.Service
+  //Database database.Service
 	Logger *logrus.Entry
 }
 
@@ -23,7 +26,7 @@ func New(opts ...ClientOpt) (*client, error) {
 	c.config = new(config)
 
   // create new fields
-  c.Database = *new(database.Service)
+  //c.Database = *new(database.Service)
 
 	// create new logger for the client
 	//

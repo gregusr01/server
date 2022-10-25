@@ -21,6 +21,11 @@ func SystemRefresh(c *gin.Context) {
 		util.HandleError(c, http.StatusUnauthorized, retErr)
 		return
 	}
+
+	//if claims.TokenType == "Registration"
+	// then register worker
+
+
 	nt, err := tokenmanager.MintToken("Auth", claims.Sub)
 	if err != nil {
 		retErr := fmt.Errorf("unable to mint new token for refresh: %s", err)
@@ -30,5 +35,8 @@ func SystemRefresh(c *gin.Context) {
 	at := AuthToken{
 		JWTToken: nt,
 	}
+
+	// tokenmanager.InvalidateToken(t)
+	
 	c.JSON(http.StatusOK, at)
 }

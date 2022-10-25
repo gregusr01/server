@@ -30,7 +30,7 @@ type Setup struct {
 
 
 // Github creates and returns a Vela tokenmanager service
-func (s *Setup) tokenmanager() (Service, error) {
+func (s *Setup) Tokenmanager() (Service, error) {
 	logrus.Trace("creating tokenManger from setup")
 
   switch s.Driver {
@@ -55,6 +55,9 @@ func (s *Setup) Minter() (Service, error) {
 	//
 	// https://pkg.go.dev/github.com/go-vela/server/scm/github?tab=doc#New
 	return Minter.New(
+    minter.WithPrivKey(s.PrivKey),
+    minter.WithPubKey(s.PubKey),
+    minter.WithSignMethod(s.SignMethod),
     minter.WithRegTokenDuration(s.RegTokenDuration),
     minter.WithAuthTokenDuration(s.AuthTokenDuration),
     minter.WithDatabase(s.Database),
