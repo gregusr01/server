@@ -78,6 +78,12 @@ func server(c *cli.Context) error {
 		return err
 	}
 
+	// setup tokenmanager
+	// tknMangr , err := setupTokenManger(c, database)
+		// if err != nil {
+		// 	return err
+		// }
+
 	metadata, err := setupMetadata(c)
 	if err != nil {
 		return err
