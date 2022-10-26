@@ -38,7 +38,7 @@ func Register(c *gin.Context) {
 		//reject
 	}
 
-	ntk, err := tokenmanager.MintToken("Registration", hn)
+	ntk, err := tokenmanager.FromContext(c).MintToken(c, "Registration", hn)
 	if err != nil {
 		retErr := fmt.Errorf("unable to validate token for registration: %s", err)
 		util.HandleError(c, http.StatusUnauthorized, retErr)

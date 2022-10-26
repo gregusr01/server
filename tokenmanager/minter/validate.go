@@ -1,5 +1,13 @@
 package minter
 
+import (
+	"context"
+	"errors"
+	"time"
+
+	"github.com/golang-jwt/jwt/v4"
+)
+
 type AuthClaims struct {
 	TokenType string
 	Iat       time.Time

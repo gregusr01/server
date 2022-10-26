@@ -1,9 +1,11 @@
 package minter
 
 import (
-	"fmt"
+	"crypto/rsa"
+	"errors"
+	"time"
 
-	"github.com/go-vela/server/database"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // ClientOpt represents a configuration option to initialize the secret client for Native.
@@ -12,7 +14,7 @@ type ClientOpt func(*client) error
 // WithTokenDuration sets the token duration in the secret client for Vault.
 func WithRegTokenDuration(tokenDuration time.Duration) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring token duration in vault secret client")
+		c.Logger.Trace("configuring token duration for registration token")
 
 		// set the token duration in the vault client
 		c.config.RegTokenDuration = tokenDuration
@@ -21,11 +23,10 @@ func WithRegTokenDuration(tokenDuration time.Duration) ClientOpt {
 	}
 }
 
-
 // WithTokenDuration sets the token duration in the secret client for Vault.
 func WithAuthTokenDuration(tokenDuration time.Duration) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring token duration in vault secret client")
+		c.Logger.Trace("configuring token duration for auth token")
 
 		// set the token duration in the vault client
 		c.config.AuthTokenDuration = tokenDuration
@@ -37,7 +38,13 @@ func WithAuthTokenDuration(tokenDuration time.Duration) ClientOpt {
 // WithTokenDuration sets the token duration in the secret client for Vault.
 func WithPrivKey(privKey *rsa.PrivateKey) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring token duration in vault secret client")
+
+		c.Logger.Trace("configuring private key for token signing")
+
+		if privKey == nil {
+			c.Logger.Trace("no private key found")
+			return errors.New("this failed")
+		}
 
 		// set the token duration in the vault client
 		c.config.PrivKey = privKey
@@ -49,7 +56,7 @@ func WithPrivKey(privKey *rsa.PrivateKey) ClientOpt {
 // WithTokenDuration sets the token duration in the secret client for Vault.
 func WithPubKey(pubKey *rsa.PublicKey) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring token duration in vault secret client")
+		c.Logger.Trace("configuring public key for token validation")
 
 		// set the token duration in the vault client
 		c.config.PubKey = pubKey
@@ -59,9 +66,9 @@ func WithPubKey(pubKey *rsa.PublicKey) ClientOpt {
 }
 
 // WithTokenDuration sets the token duration in the secret client for Vault.
-func WithSignMethod(signingMethod SigningMethod) ClientOpt {
+func WithSignMethod(signingMethod jwt.SigningMethod) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring token duration in vault secret client")
+		c.Logger.Trace("configuring token signing method")
 
 		// set the token duration in the vault client
 		c.config.SignMethod = signingMethod
@@ -70,20 +77,19 @@ func WithSignMethod(signingMethod SigningMethod) ClientOpt {
 	}
 }
 
-
 // WithDatabase sets the Vela database service in the secret client for Native.
-func WithDatabase(d database.Service) ClientOpt {
-	return func(c *client) error {
-		c.Logger.Trace("configuring database service in native secret client")
+// func WithDatabase(d database.Service) ClientOpt {
+// 	return func(c *client) error {
+// 		c.Logger.Trace("configuring database service in native secret client")
 
-		// check if the Vela database service provided is empty
-		if d == nil {
-			return fmt.Errorf("no Vela database service provided")
-		}
+// 		// check if the Vela database service provided is empty
+// 		if d == nil {
+// 			return fmt.Errorf("no Vela database service provided")
+// 		}
 
-		// set the Vela database service in the secret client
-		c.Database = d
+// 		// set the Vela database service in the secret client
+// 		c.Database = d
 
-		return nil
-	}
-}
+// 		return nil
+// 	}
+// }

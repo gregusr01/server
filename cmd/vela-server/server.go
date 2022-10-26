@@ -79,7 +79,7 @@ func server(c *cli.Context) error {
 	}
 
 	// setup tokenmanager
-	tknMangr , err := setupTokenManger(c)
+	tknMangr, err := setupTokenManger(c)
 	if err != nil {
 		return err
 	}

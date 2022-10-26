@@ -1,13 +1,6 @@
 package tokenmanager
 
-import (
-	"errors"
-	"time"
-
-	"github.com/golang-jwt/jwt"
-)
-
-
+import "github.com/sirupsen/logrus"
 
 // New creates and returns a Vela service capable of
 // integrating with the configured scm provider.
@@ -26,7 +19,6 @@ func New(s *Setup) (Service, error) {
 	// }
 
 	logrus.Debug("creating tokenManager service from setup")
-
 
 	return s.Tokenmanager()
 }

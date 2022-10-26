@@ -1,5 +1,13 @@
 package minter
 
+import (
+	"context"
+	"errors"
+	"time"
+
+	"github.com/golang-jwt/jwt/v4"
+)
+
 func (c *client) MintToken(ctx context.Context, tokenType, hostname string) (string, error) {
 
 	//pull priv key from postgres
@@ -11,14 +19,14 @@ func (c *client) MintToken(ctx context.Context, tokenType, hostname string) (str
 		tk = jwt.NewWithClaims(c.config.SignMethod, jwt.MapClaims{
 			"tokenType": tokenType,
 			"iat":       time.Now().Unix(),
-			"exp":       time.Now().Unix()+c.config.RegTokenDuration,
+			"exp":       time.Now().Unix(),
 			"sub":       hostname,
 		})
 	case "Auth":
 		tk = jwt.NewWithClaims(c.config.SignMethod, jwt.MapClaims{
 			"tokenType": tokenType,
 			"iat":       time.Now().Unix(),
-			"exp":       time.Now().Unix()+c.config.AuthTokenDuration,
+			"exp":       time.Now().Unix(),
 			"sub":       hostname,
 		})
 	default:

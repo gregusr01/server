@@ -1,16 +1,24 @@
 package minter
 
+import (
+	"crypto/rsa"
+	"time"
+
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/sirupsen/logrus"
+)
+
 type config struct {
-  PrivKey *rsa.PrivateKey //Private Key Used to Sign Token
-  PubKey *rsa.PublicKey //Public Key Used to Validate Token
-  SignMethod SigningMethod //Token SigningMethod
-  RegTokenDuration time.Duration
-  AuthTokenDuration time.Duration
+	PrivKey           *rsa.PrivateKey   //Private Key Used to Sign Token
+	PubKey            *rsa.PublicKey    //Public Key Used to Validate Token
+	SignMethod        jwt.SigningMethod //Token SigningMethod
+	RegTokenDuration  time.Duration
+	AuthTokenDuration time.Duration
 }
 
 type client struct {
-	config  *config
-  //Database database.Service
+	config *config
+	//Database database.Service
 	Logger *logrus.Entry
 }
 
@@ -19,14 +27,15 @@ type client struct {
 //
 //nolint:revive // ignore returning unexported client
 func New(opts ...ClientOpt) (*client, error) {
+
 	// create new GitHub client
 	c := new(client)
 
 	// create new fields
 	c.config = new(config)
 
-  // create new fields
-  //c.Database = *new(database.Service)
+	// create new fields
+	//c.Database = *new(database.Service)
 
 	// create new logger for the client
 	//
@@ -39,7 +48,11 @@ func New(opts ...ClientOpt) (*client, error) {
 	c.Logger = logrus.NewEntry(logger).WithField("tokenmanager", c.Driver())
 
 	// apply all provided configuration options
+
+	var count int
 	for _, opt := range opts {
+		count++
+		logrus.Tracef("\n\nHERE IS THE COUNT %d\n\n", count)
 		err := opt(c)
 		if err != nil {
 			return nil, err

@@ -15,7 +15,7 @@ type AuthToken struct {
 
 func SystemRefresh(c *gin.Context) {
 	t := c.Request.Header.Get("Authorization")
-	claims, err := tokenmanager.ValidateToken(t)
+	claims, err := tokenmanager.FromContext(c).ValidateToken(c, t)
 	if err != nil {
 		retErr := fmt.Errorf("unable to validate token for refresh: %s", err)
 		util.HandleError(c, http.StatusUnauthorized, retErr)
@@ -25,8 +25,7 @@ func SystemRefresh(c *gin.Context) {
 	//if claims.TokenType == "Registration"
 	// then register worker
 
-
-	nt, err := tokenmanager.MintToken("Auth", claims.Sub)
+	nt, err := tokenmanager.FromContext(c).MintToken(c, "Auth", claims.Sub)
 	if err != nil {
 		retErr := fmt.Errorf("unable to mint new token for refresh: %s", err)
 		util.HandleError(c, http.StatusUnauthorized, retErr)
@@ -37,6 +36,6 @@ func SystemRefresh(c *gin.Context) {
 	}
 
 	// tokenmanager.InvalidateToken(t)
-	
+
 	c.JSON(http.StatusOK, at)
 }
