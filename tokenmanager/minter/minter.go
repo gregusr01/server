@@ -49,10 +49,7 @@ func New(opts ...ClientOpt) (*client, error) {
 
 	// apply all provided configuration options
 
-	var count int
 	for _, opt := range opts {
-		count++
-		logrus.Tracef("\n\nHERE IS THE COUNT %d\n\n", count)
 		err := opt(c)
 		if err != nil {
 			return nil, err

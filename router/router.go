@@ -73,7 +73,7 @@ func Load(options ...gin.HandlerFunc) *gin.Engine {
 	// Refresh Access Token endpoint
 	r.GET("/token-refresh", api.RefreshAccessToken)
 
-	r.POST("/sytem-refresh", api.SystemRefresh)
+	r.POST("/system-refresh", api.SystemRefresh)
 
 	// Metric endpoint
 	r.GET("/metrics", api.CustomMetrics, gin.WrapH(api.BaseMetrics()))
