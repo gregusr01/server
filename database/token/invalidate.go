@@ -5,15 +5,6 @@
 //nolint:dupl // ignore similar code with update.go
 package token
 
-import (
-	"fmt"
-
-	"github.com/go-vela/types/constants"
-	"github.com/go-vela/types/database"
-	"github.com/go-vela/types/library"
-	"github.com/sirupsen/logrus"
-)
-
 // InvalidateToken adds a token hash to the token_invalidate database.
 func (e *engine) InvalidateToken(t string) error {
 	e.logger.Tracef("Invalidating token")

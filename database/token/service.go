@@ -4,10 +4,6 @@
 
 package token
 
-import (
-	"github.com/go-vela/types/library"
-)
-
 // RepoService represents the Vela interface for repo
 // functions with the supported Database backends.
 //

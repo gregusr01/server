@@ -2,9 +2,12 @@ package minter
 
 import (
 	"context"
+	"crypto/sha1"
 	"errors"
+	"fmt"
 	"time"
 
+	"github.com/go-vela/server/database"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -34,7 +37,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 	//hash token
 	th := sha1.Sum([]byte(token))
 
-	if err = database.FromContext(c).GetInvalidToken(th); err != nil {
+	if err = database.FromContext(ctx).GetInvalidToken(string(th[:])); err != nil {
 		retErr := fmt.Errorf("unable to call token inalidation db: %w", err)
 
 		return nil, retErr
