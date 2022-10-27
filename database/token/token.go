@@ -2,12 +2,11 @@
 //
 // Use of this source code is governed by the LICENSE file in this repository.
 
-package pipeline
+package token
 
 import (
 	"fmt"
 
-	"github.com/go-vela/types/constants"
 	"github.com/sirupsen/logrus"
 
 	"gorm.io/gorm"

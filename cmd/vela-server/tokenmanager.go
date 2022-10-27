@@ -5,6 +5,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"time"
 
 	"github.com/go-vela/server/tokenmanager"

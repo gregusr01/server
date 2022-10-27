@@ -11,6 +11,7 @@ import (
 	"github.com/go-vela/server/database/pipeline"
 	"github.com/go-vela/server/database/repo"
 	"github.com/go-vela/server/database/sqlite/ddl"
+	"github.com/go-vela/server/database/token"
 	"github.com/go-vela/server/database/user"
 	"github.com/go-vela/types/constants"
 	"github.com/sirupsen/logrus"

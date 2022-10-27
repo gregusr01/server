@@ -2,16 +2,14 @@
 //
 // Use of this source code is governed by the LICENSE file in this repository.
 
-package repo
+package token
 
 import (
 	"github.com/go-vela/types/constants"
-	"github.com/go-vela/types/database"
-	"github.com/go-vela/types/library"
 )
 
 // GetRepo gets a repo by ID from the database.
-func (e *engine) GetInvalidToken(t string) (error) {
+func (e *engine) GetInvalidToken(t string) error {
 	e.logger.Tracef("getting token hash from the database")
 
 	// variable to store query results
