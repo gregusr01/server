@@ -9,6 +9,7 @@ import (
 	"crypto/rsa"
 	"time"
 
+	"github.com/go-vela/server/database"
 	"github.com/go-vela/server/tokenmanager"
 	"github.com/golang-jwt/jwt"
 
@@ -18,7 +19,7 @@ import (
 )
 
 // helper function to setup the queue from the CLI arguments.
-func setupTokenManger(c *cli.Context) (tokenmanager.Service, error) {
+func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service, error) {
 
 	logrus.Debug("Creating tokenManger for server worker authentication")
 
@@ -29,8 +30,8 @@ func setupTokenManger(c *cli.Context) (tokenmanager.Service, error) {
 	pk := &k.PublicKey
 
 	_manager := &tokenmanager.Setup{
-		Driver: "minter",
-		//Database: d,
+		Driver:            "minter",
+		Database:          d,
 		PrivKey:           k,
 		PubKey:            pk,
 		SignMethod:        jwt.SigningMethodRS256,

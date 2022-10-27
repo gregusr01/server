@@ -12,7 +12,8 @@ const (
 CREATE TABLE
 IF NOT EXISTS
 invalid_tokens (
-	UNIQUE(token_hash)    VARCHAR(250)
+	token_hash    VARCHAR(250),
+	UNIQUE(token_hash)
 );`
 
 	// CreateSqliteTable represents a query to create the Sqlite repos table.
@@ -20,7 +21,8 @@ invalid_tokens (
 CREATE TABLE
 IF NOT EXISTS
 invalid_tokens (
-	UNIQUE(token_hash)    TEXT
+	token_hash    TEXT,
+	UNIQUE(token_hash)
 );`
 )
 

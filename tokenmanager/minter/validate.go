@@ -38,7 +38,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 	th := sha1.Sum([]byte(token))
 
 	if err = database.FromContext(ctx).GetInvalidToken(string(th[:])); err != nil {
-		retErr := fmt.Errorf("unable to call token inalidation db: %w", err)
+		retErr := fmt.Errorf("unable to call token invalidation db: %w", err)
 
 		return nil, retErr
 	}

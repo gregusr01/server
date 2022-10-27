@@ -4,10 +4,6 @@
 
 package token
 
-import (
-	"github.com/go-vela/types/constants"
-)
-
 // GetRepo gets a repo by ID from the database.
 func (e *engine) GetInvalidToken(t string) error {
 	e.logger.Tracef("getting token hash from the database")
@@ -17,7 +13,7 @@ func (e *engine) GetInvalidToken(t string) error {
 
 	// send query to the database and store result in variable
 	err := e.client.
-		Table(constants.TableRepo).
+		Table("invalid_tokens").
 		Where("token_hash = ?", t).
 		Take(ts).
 		Error
