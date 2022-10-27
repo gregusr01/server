@@ -33,12 +33,12 @@ func WithLogger(logger *logrus.Entry) EngineOpt {
 	}
 }
 
-// // WithSkipCreation sets the skip creation logic in the database engine for Repos.
-// func WithSkipCreation(skipCreation bool) EngineOpt {
-// 	return func(e *engine) error {
-// 		// set to skip creating tables and indexes in the repo engine
-// 		e.config.SkipCreation = skipCreation
-//
-// 		return nil
-// 	}
-// }
+// WithSkipCreation sets the skip creation logic in the database engine for Repos.
+func WithSkipCreation(skipCreation bool) EngineOpt {
+	return func(e *engine) error {
+		// set to skip creating tables and indexes in the repo engine
+		e.config.SkipCreation = skipCreation
+
+		return nil
+	}
+}
