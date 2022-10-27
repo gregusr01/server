@@ -30,9 +30,15 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 		return nil, errors.New("invalid token")
 	}
 
-	//validate exp time
-
 	//validate not part of invalidationDB
+	//hash token
+	th := sha1.Sum([]byte(token))
+
+	if err = database.FromContext(c).GetInvalidToken(th); err != nil {
+		retErr := fmt.Errorf("unable to call token inalidation db: %w", err)
+
+		return nil, retErr
+	}
 
 	return parseAuthClaims(tkn)
 }

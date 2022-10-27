@@ -49,6 +49,8 @@ type (
 		repo.RepoService
 		// https://pkg.go.dev/github.com/go-vela/server/database/user#UserService
 		user.UserService
+
+		token.TokenService
 	}
 )
 
@@ -375,6 +377,15 @@ func createServices(c *client) error {
 		user.WithEncryptionKey(c.config.EncryptionKey),
 		user.WithLogger(c.Logger),
 		user.WithSkipCreation(c.config.SkipCreation),
+	)
+	if err != nil {
+		return err
+	}
+
+	c.TokenService, err = token.New(
+		token.WithClient(c.Sqlite),
+		token.WithLogger(c.Logger),
+		token.WithSkipCreation(c.config.SkipCreation),
 	)
 	if err != nil {
 		return err

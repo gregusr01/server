@@ -57,7 +57,7 @@ func New(opts ...EngineOpt) (*engine, error) {
 		}
 	}
 
-	// check if we should skip creating pipeline database objects
+	// check if we should skip creating database objects
 	if e.config.SkipCreation {
 		e.logger.Warning("skipping creation of pipelines table and indexes in the database")
 
@@ -67,7 +67,7 @@ func New(opts ...EngineOpt) (*engine, error) {
 	// create the pipelines table
 	err := e.CreateInvalidTokenTable(e.client.Config.Dialector.Name())
 	if err != nil {
-		return nil, fmt.Errorf("unable to create %s table: %w", constants.TablePipeline, err)
+		return nil, fmt.Errorf("unable to create %s table: %w", "invalid token", err)
 	}
 
 	return e, nil
