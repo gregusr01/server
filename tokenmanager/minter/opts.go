@@ -3,8 +3,10 @@ package minter
 import (
 	"crypto/rsa"
 	"errors"
+	"fmt"
 	"time"
 
+	"github.com/go-vela/server/database"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -78,18 +80,18 @@ func WithSignMethod(signingMethod jwt.SigningMethod) ClientOpt {
 }
 
 // WithDatabase sets the Vela database service in the secret client for Native.
-// func WithDatabase(d database.Service) ClientOpt {
-// 	return func(c *client) error {
-// 		c.Logger.Trace("configuring database service in native secret client")
+func WithDatabase(d database.Service) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring database service in native secret client")
 
-// 		// check if the Vela database service provided is empty
-// 		if d == nil {
-// 			return fmt.Errorf("no Vela database service provided")
-// 		}
+		// check if the Vela database service provided is empty
+		if d == nil {
+			return fmt.Errorf("no Vela database service provided")
+		}
 
-// 		// set the Vela database service in the secret client
-// 		c.Database = d
+		// set the Vela database service in the secret client
+		c.Database = d
 
-// 		return nil
-// 	}
-// }
+		return nil
+	}
+}
