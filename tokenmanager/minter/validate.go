@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-vela/server/database"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/sirupsen/logrus"
 )
 
 type AuthClaims struct {
@@ -43,6 +44,8 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 	hasher := sha1.New()
 	hasher.Write([]byte(token))
 	sth := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+
+	logrus.Info("STH: ", sth)
 
 	if err = database.FromContext(ctx).GetInvalidToken(sth); err != nil {
 		retErr := fmt.Errorf("unable to call token invalidation db: %w", err)

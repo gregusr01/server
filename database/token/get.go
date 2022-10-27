@@ -4,27 +4,38 @@
 
 package token
 
+import (
+	"database/sql"
+	"errors"
+)
+
 // GetRepo gets a repo by ID from the database.
 func (e *engine) GetInvalidToken(t string) error {
 	e.logger.Tracef("getting token hash from the database")
 
 	// variable to store query results
-	var ts string
+	type token struct {
+		ts sql.NullString `sql:"token_hash"`
+	}
+
+	var tk token
 
 	// send query to the database and store result in variable
 	err := e.client.
 		Table("invalid_tokens").
 		Where("token_hash = ?", t).
-		Take(ts).
+		Take(tk).
 		Error
 	if err != nil {
+		if err.Error() == "record not found" {
+			return nil
+		}
 		return err
 	}
 
-	e.logger.Tracef("what we got back: %s", ts)
+	e.logger.Tracef("what we got back: %s", tk)
 
 	// if we got something
-	// return errors.New("token hash found inside invalidation database")
+	return errors.New("token hash found inside invalidation database")
 
-	return nil
 }

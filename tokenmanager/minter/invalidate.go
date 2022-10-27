@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/go-vela/server/database"
+	"github.com/sirupsen/logrus"
 )
 
 func (c *client) InvalidateToken(ctx context.Context, token string) error {
@@ -19,6 +20,8 @@ func (c *client) InvalidateToken(ctx context.Context, token string) error {
 	hasher := sha1.New()
 	hasher.Write([]byte(token))
 	sth := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+
+	logrus.Info("STH: ", sth)
 
 	//drop in invalidation db
 	if err := database.FromContext(ctx).InvalidateToken(sth); err != nil {

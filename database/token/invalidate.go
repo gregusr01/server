@@ -5,15 +5,25 @@
 //nolint:dupl // ignore similar code with update.go
 package token
 
+import "database/sql"
+
 // InvalidateToken adds a token hash to the token_invalidate database.
 func (e *engine) InvalidateToken(t string) error {
 	e.logger.Tracef("Invalidating token")
 
 	//any vaidation we can do on hash?
 
+	type token struct {
+		ts sql.NullString `sql:"token_hash"`
+	}
+
+	tk := &token{
+		ts: sql.NullString{String: t, Valid: true},
+	}
+
 	// send query to the database
 	return e.client.
 		Table("invalid_tokens").
-		Create(t).
+		Create(tk).
 		Error
 }
