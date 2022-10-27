@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"time"
 
+	"github.com/go-vela/server/database"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
 )
@@ -17,9 +18,9 @@ type config struct {
 }
 
 type client struct {
-	config *config
-	//Database database.Service
-	Logger *logrus.Entry
+	config   *config
+	Database database.Service
+	Logger   *logrus.Entry
 }
 
 // New returns a SCM implementation that integrates with
@@ -35,7 +36,7 @@ func New(opts ...ClientOpt) (*client, error) {
 	c.config = new(config)
 
 	// create new fields
-	//c.Database = *new(database.Service)
+	c.Database = *new(database.Service)
 
 	// create new logger for the client
 	//

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-vela/server/database"
 	"github.com/go-vela/server/tokenmanager/minter"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
@@ -16,7 +17,7 @@ type Setup struct {
 	Driver string
 
 	// specifies the database service to use for the client
-	//Database database.Service
+	Database database.Service
 
 	//Private Key Used to Sign Token
 	PrivKey *rsa.PrivateKey
@@ -68,6 +69,6 @@ func (s *Setup) Minter() (Service, error) {
 		minter.WithSignMethod(s.SignMethod),
 		minter.WithRegTokenDuration(s.RegTokenDuration),
 		minter.WithAuthTokenDuration(s.AuthTokenDuration),
-		// minter.WithDatabase(s.Database),
+		minter.WithDatabase(s.Database),
 	)
 }
