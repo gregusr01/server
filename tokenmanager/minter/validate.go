@@ -3,6 +3,7 @@ package minter
 import (
 	"context"
 	"crypto/sha1"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -35,9 +36,15 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 
 	//validate not part of invalidationDB
 	//hash token
-	th := sha1.Sum([]byte(token))
+	// th := sha1.Sum([]byte(token))
 
-	if err = database.FromContext(ctx).GetInvalidToken(string(th[:])); err != nil {
+	// sth := base64.URLEncoding.EncodeToString(th)
+
+	hasher := sha1.New()
+	hasher.Write([]byte(token))
+	sth := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+
+	if err = database.FromContext(ctx).GetInvalidToken(sth); err != nil {
 		retErr := fmt.Errorf("unable to call token invalidation db: %w", err)
 
 		return nil, retErr
