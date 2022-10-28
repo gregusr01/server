@@ -24,7 +24,7 @@ func (e *engine) GetInvalidToken(t string) error {
 	err := e.client.
 		Table("invalid_tokens").
 		Where("token_hash = ?", t).
-		Take(tk).
+		Take(&tk).
 		Error
 	if err != nil {
 		if err.Error() == "record not found" {

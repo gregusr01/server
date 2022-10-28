@@ -14,11 +14,11 @@ func (e *engine) InvalidateToken(t string) error {
 	//any vaidation we can do on hash?
 
 	type token struct {
-		ts sql.NullString `sql:"token_hash"`
+		TokenHash sql.NullString `sql:"token_hash"`
 	}
 
 	tk := &token{
-		ts: sql.NullString{String: t, Valid: true},
+		TokenHash: sql.NullString{String: t, Valid: true},
 	}
 
 	// send query to the database
