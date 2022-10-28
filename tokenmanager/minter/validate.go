@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/go-vela/server/database"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
 )
@@ -47,7 +46,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 
 	logrus.Info("STH: ", sth)
 
-	if err = database.FromContext(ctx).GetInvalidToken(sth); err != nil {
+	if err = c.Database.GetInvalidToken(sth); err != nil {
 		retErr := fmt.Errorf("unable to call token invalidation db: %w", err)
 
 		return nil, retErr

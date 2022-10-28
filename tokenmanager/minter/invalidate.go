@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/go-vela/server/database"
 	"github.com/sirupsen/logrus"
 )
 
@@ -24,7 +23,7 @@ func (c *client) InvalidateToken(ctx context.Context, token string) error {
 	logrus.Info("STH: ", sth)
 
 	//drop in invalidation db
-	if err := database.FromContext(ctx).InvalidateToken(sth); err != nil {
+	if err := c.Database.InvalidateToken(sth); err != nil {
 		retErr := fmt.Errorf("unable to invalidate token: %w", err)
 
 		return retErr

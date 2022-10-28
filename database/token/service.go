@@ -4,7 +4,7 @@
 
 package token
 
-// RepoService represents the Vela interface for repo
+// TokenService represents the Vela interface for token manager
 // functions with the supported Database backends.
 //
 //nolint:revive // ignore name stutter

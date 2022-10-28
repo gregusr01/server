@@ -5,20 +5,19 @@
 package token
 
 import (
-	"database/sql"
 	"errors"
 )
 
-// GetRepo gets a repo by ID from the database.
+// GetInvalidToken checks for an existing token from the database.
 func (e *engine) GetInvalidToken(t string) error {
 	e.logger.Tracef("getting token hash from the database")
 
 	// variable to store query results
-	type token struct {
-		ts sql.NullString `sql:"token_hash"`
-	}
+	// type token struct {
+	// 	Ts sql.NullString `sql:"token_hash"`
+	// }
 
-	var tk token
+	var tk string
 
 	// send query to the database and store result in variable
 	err := e.client.
@@ -30,6 +29,7 @@ func (e *engine) GetInvalidToken(t string) error {
 		if err.Error() == "record not found" {
 			return nil
 		}
+		e.logger.Trace("Past record not found catch")
 		return err
 	}
 

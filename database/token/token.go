@@ -63,7 +63,7 @@ func New(opts ...EngineOpt) (*engine, error) {
 		return e, nil
 	}
 
-	// create the pipelines table
+	// create the Invalid Tokens table
 	err := e.CreateInvalidTokenTable(e.client.Config.Dialector.Name())
 	if err != nil {
 		return nil, fmt.Errorf("unable to create %s table: %w", "invalid token", err)

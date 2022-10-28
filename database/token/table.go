@@ -7,7 +7,7 @@ package token
 import "github.com/go-vela/types/constants"
 
 const (
-	// CreatePostgresTable represents a query to create the Postgres repos table.
+	// CreatePostgresTable represents a query to create the Postgres invalid_tokens table.
 	CreatePostgresTable = `
 CREATE TABLE
 IF NOT EXISTS
@@ -16,7 +16,7 @@ invalid_tokens (
 	UNIQUE(token_hash)
 );`
 
-	// CreateSqliteTable represents a query to create the Sqlite repos table.
+	// CreateSqliteTable represents a query to create the Sqlite invalid_tokens table.
 	CreateSqliteTable = `
 CREATE TABLE
 IF NOT EXISTS
@@ -26,7 +26,7 @@ invalid_tokens (
 );`
 )
 
-// CreateRepoTable creates the token table in the database.
+// CreateInvalidTokenTable creates the token table in the database.
 func (e *engine) CreateInvalidTokenTable(driver string) error {
 	e.logger.Tracef("creating repos table in the database")
 
