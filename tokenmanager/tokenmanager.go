@@ -3,11 +3,8 @@ package tokenmanager
 import "github.com/sirupsen/logrus"
 
 // New creates and returns a Vela service capable of
-// integrating with the configured scm provider.
+// integrating with the token manager service.
 //
-// Currently the following scm providers are supported:
-//
-// * Github
 // .
 func New(s *Setup) (Service, error) {
 	// validate the setup being provided

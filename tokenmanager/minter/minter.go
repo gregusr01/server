@@ -23,8 +23,7 @@ type client struct {
 	Logger   *logrus.Entry
 }
 
-// New returns a SCM implementation that integrates with
-// a GitHub or a GitHub Enterprise instance.
+// New returns a tokenmanager implementation.
 //
 //nolint:revive // ignore returning unexported client
 func New(opts ...ClientOpt) (*client, error) {
