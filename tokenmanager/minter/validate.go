@@ -19,7 +19,7 @@ type AuthClaims struct {
 	Sub       string
 }
 
-// validateToken validates a token using the public key
+// ValidateToken validates a token using the public key
 func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
 
 	//pull pub key from postgres (or use priv key and derive pub)

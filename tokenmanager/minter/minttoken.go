@@ -8,6 +8,8 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+// MintToken checks the DB for existing registration token, creates and returns a new one
+// if one does not exist
 func (c *client) MintToken(ctx context.Context, tokenType, hostname string) (string, error) {
 
 	//pull priv key from postgres
