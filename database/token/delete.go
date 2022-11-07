@@ -2,7 +2,8 @@
 // //
 // // Use of this source code is governed by the LICENSE file in this repository.
 //
-// package token
+package token
+
 //
 // import (
 // 	"github.com/go-vela/types/constants"

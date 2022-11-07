@@ -1,4 +1,5 @@
-// package minter
+package minter
+
 //
 // import (
 // 	"context"
