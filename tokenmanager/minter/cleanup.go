@@ -1,19 +1,21 @@
-// package minter
-//
-// import (
-// 	"context"
-// 	"errors"
-// 	"time"
-//
-// 	"github.com/golang-jwt/jwt/v4"
-// )
-//
-// // MintToken checks the DB for existing registration token, creates and returns a new one
-// // if one does not exist
-// func (c *client) CleanTokens(ctx context.Context) (error) {
-//
-//   //clean tokens from db older than exp
-//   // if err != nil; return error
-//   //return nil
-//
-// }
+package minter
+
+import (
+	"context"
+	"errors"
+	"time"
+
+  "github.com/sirupsen/logrus"
+)
+
+// CleanInvalidTokens cleans old entries to the invalid token db
+func (c *client) CleanInvalidTokens(ctx context.Context) {
+  for {
+    ticker := time.NewTicker(1 * time.Minute)
+  	for range ticker.C {
+  		if err := c.Database.DeleteInvalidTokens(); err != nil {
+        logrus.Info("Error cleaning invalid token database", err)
+  		}
+  	}
+  }
+}
