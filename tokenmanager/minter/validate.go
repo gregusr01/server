@@ -2,10 +2,14 @@ package minter
 
 import (
 	"context"
+	"crypto/sha1"
+	"encoding/base64"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/sirupsen/logrus"
 )
 
 type AuthClaims struct {
@@ -15,7 +19,7 @@ type AuthClaims struct {
 	Sub       string
 }
 
-// validateToken validates a token using the public key
+// ValidateToken validates a token using the public key
 func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
 
 	//pull pub key from postgres (or use priv key and derive pub)
@@ -30,9 +34,23 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 		return nil, errors.New("invalid token")
 	}
 
-	//validate exp time
-
 	//validate not part of invalidationDB
+	//hash token
+	// th := sha1.Sum([]byte(token))
+
+	// sth := base64.URLEncoding.EncodeToString(th)
+
+	hasher := sha1.New()
+	hasher.Write([]byte(token))
+	sth := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+
+	logrus.Info("STH: ", sth)
+
+	if err = c.Database.GetInvalidToken(sth); err != nil {
+		retErr := fmt.Errorf("unable to call token invalidation db: %w", err)
+
+		return nil, retErr
+	}
 
 	return parseAuthClaims(tkn)
 }

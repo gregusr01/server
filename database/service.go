@@ -7,6 +7,7 @@ package database
 import (
 	"github.com/go-vela/server/database/pipeline"
 	"github.com/go-vela/server/database/repo"
+	"github.com/go-vela/server/database/token"
 	"github.com/go-vela/server/database/user"
 	"github.com/go-vela/types/library"
 )
@@ -239,4 +240,6 @@ type Service interface {
 	// DeleteWorker defines a function that
 	// deletes a worker by hostname.
 	DeleteWorker(int64) error
+
+	token.TokenService
 }

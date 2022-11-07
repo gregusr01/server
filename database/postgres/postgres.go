@@ -12,6 +12,7 @@ import (
 	"github.com/go-vela/server/database/pipeline"
 	"github.com/go-vela/server/database/postgres/ddl"
 	"github.com/go-vela/server/database/repo"
+	"github.com/go-vela/server/database/token"
 	"github.com/go-vela/server/database/user"
 	"github.com/go-vela/types/constants"
 	"github.com/sirupsen/logrus"
@@ -50,6 +51,8 @@ type (
 		repo.RepoService
 		// https://pkg.go.dev/github.com/go-vela/server/database/user#UserService
 		user.UserService
+
+		token.TokenService
 	}
 )
 
@@ -383,6 +386,18 @@ func createServices(c *client) error {
 		user.WithEncryptionKey(c.config.EncryptionKey),
 		user.WithLogger(c.Logger),
 		user.WithSkipCreation(c.config.SkipCreation),
+	)
+	if err != nil {
+		return err
+	}
+
+	// create the database agnostic user service
+	//
+	// https://pkg.go.dev/github.com/go-vela/server/database/user#New
+	c.TokenService, err = token.New(
+		token.WithClient(c.Postgres),
+		token.WithLogger(c.Logger),
+		token.WithSkipCreation(c.config.SkipCreation),
 	)
 	if err != nil {
 		return err

@@ -35,7 +35,12 @@ func SystemRefresh(c *gin.Context) {
 		JWTToken: nt,
 	}
 
-	// tokenmanager.InvalidateToken(t)
+	// invalidate token
+	if err = tokenmanager.FromContext(c).InvalidateToken(c, t); err != nil {
+		retErr := fmt.Errorf("unable add token for to invalidation db: %s", err)
+		util.HandleError(c, http.StatusUnauthorized, retErr)
+		return
+	}
 
 	c.JSON(http.StatusOK, at)
 }

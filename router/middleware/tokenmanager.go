@@ -9,7 +9,7 @@ import (
 	"github.com/go-vela/server/tokenmanager"
 )
 
-// Queue is a middleware function that initializes the queue and
+// Tokenmanager is a middleware function that initializes the tokenmanager service and
 // attaches to the context of every http.Request.
 func Tokenmanager(t tokenmanager.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
