@@ -5,7 +5,10 @@
 //nolint:dupl // ignore similar code with update.go
 package token
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 // InvalidateToken adds a token hash to the token_invalidate database.
 func (e *engine) InvalidateToken(t string) error {
@@ -15,15 +18,17 @@ func (e *engine) InvalidateToken(t string) error {
 
 	type token struct {
 		TokenHash sql.NullString `sql:"token_hash"`
+		Timestamp sql.NullInt64  `sql:"timestamp"`
 	}
 
-	tk := &token{
+	tk := token{
 		TokenHash: sql.NullString{String: t, Valid: true},
+		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true}
 	}
 
 	// send query to the database
 	return e.client.
 		Table("invalid_tokens").
-		Create(tk).
+		Create(&tk).
 		Error
 }

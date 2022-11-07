@@ -13,6 +13,7 @@ CREATE TABLE
 IF NOT EXISTS
 invalid_tokens (
 	token_hash    VARCHAR(250),
+	timestamp    BIGINT,
 	UNIQUE(token_hash)
 );`
 
@@ -22,6 +23,7 @@ CREATE TABLE
 IF NOT EXISTS
 invalid_tokens (
 	token_hash    TEXT,
+	timestamp    BIGINT,
 	UNIQUE(token_hash)
 );`
 )
