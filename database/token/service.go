@@ -21,4 +21,6 @@ type TokenService interface {
 
 	// GetInvalidToken defines a function that gets a token hash from the invalid_tokens table
 	GetInvalidToken(string) error
+
+	DeleteInvalidTokens() error
 }

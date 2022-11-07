@@ -5,11 +5,7 @@
 package token
 
 import (
-	"github.com/go-vela/types/constants"
-	"github.com/go-vela/types/database"
-	//"github.com/go-vela/types/library"
-	"github.com/sirupsen/logrus"
-  "time"
+	"time"
 )
 
 // DeletePipeline deletes an existing pipeline from the database.
@@ -23,12 +19,12 @@ func (e *engine) DeleteInvalidTokens() error {
 	// https://pkg.go.dev/github.com/go-vela/types/database#PipelineFromLibrary
 	//pipeline := database.PipelineFromLibrary(p)
 
-  ts := time.Now().Unix().Add(-time.Minute * 1)
+	ts := time.Now().Add(-time.Minute * 1).Unix()
 
 	// send query to the database
 	return e.client.
 		Table("invalid_tokens").
 		Delete("*").
-    Where("timestamp < ?", ts).
+		Where("timestamp < ?", ts).
 		Error
 }
