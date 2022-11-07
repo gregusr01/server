@@ -6,6 +6,8 @@ package token
 
 import (
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 // DeletePipeline deletes an existing pipeline from the database.
@@ -21,10 +23,11 @@ func (e *engine) DeleteInvalidTokens() error {
 
 	ts := time.Now().Add(-time.Minute * 1).Unix()
 
+	logrus.Info("TS: ", ts)
+
 	// send query to the database
 	return e.client.
 		Table("invalid_tokens").
-		Delete("*").
-		Where("timestamp < ?", ts).
+		Delete("timestamp < ?", ts).
 		Error
 }
