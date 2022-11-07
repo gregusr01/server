@@ -11,7 +11,7 @@ import (
 )
 
 // Service represents the interface for Vela integrating
-// with the different supported Queue backends.
+// with the MintToken, ValidateToken, and InvalidateToken functions
 type Service interface {
 	// Service Interface Functions
 	Driver() string

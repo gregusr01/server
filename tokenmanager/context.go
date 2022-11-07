@@ -14,7 +14,7 @@ import (
 // the tokenmanger Service in the context.
 const key = "tokenmanager"
 
-// FromContext retrieves the tokenmanger Service from the context.Context.
+// FromContext retrieves the tokenmanager Service from the context.Context.
 func FromContext(c context.Context) Service {
 	// get tokenmanger value from context.Context
 	v := c.Value(key)
@@ -31,7 +31,7 @@ func FromContext(c context.Context) Service {
 	return s
 }
 
-// FromGinContext retrieves the tokenmanger Service from the gin.Context.
+// FromGinContext retrieves the tokenmanager Service from the gin.Context.
 func FromGinContext(c *gin.Context) Service {
 	// get tokenmanger value from gin.Context
 	//
@@ -50,7 +50,7 @@ func FromGinContext(c *gin.Context) Service {
 	return s
 }
 
-// WithContext inserts the tokenmanger Service into the context.Context.
+// WithContext inserts the tokenmanager Service into the context.Context.
 func WithContext(c context.Context, s Service) context.Context {
 	// set the queue Service in the context.Context
 	//
@@ -60,7 +60,7 @@ func WithContext(c context.Context, s Service) context.Context {
 	return context.WithValue(c, key, s)
 }
 
-// WithGinContext inserts the queue Service into the gin.Context.
+// WithGinContext inserts the tokenmanager Service into the gin.Context.
 func WithGinContext(c *gin.Context, s Service) {
 	// set the tokenmanger Service in the gin.Context
 	//

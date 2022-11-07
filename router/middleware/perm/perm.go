@@ -38,8 +38,8 @@ func MustPlatformAdmin() gin.HandlerFunc {
 			return
 
 		default:
-			// retErr := fmt.Errorf("user %s is not a platform admin", u.GetName())
-			// util.HandleError(c, http.StatusUnauthorized, retErr)
+			retErr := fmt.Errorf("user %s is not a platform admin", u.GetName())
+			util.HandleError(c, http.StatusUnauthorized, retErr)
 
 			return
 		}
