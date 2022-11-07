@@ -83,6 +83,12 @@ func server(c *cli.Context) error {
 		return err
 	}
 
+	//setup goroutine for tokenCleanup
+	//go
+	// for {
+	// tknMangr.CleanTokens()
+	//}
+
 	metadata, err := setupMetadata(c)
 	if err != nil {
 		return err
