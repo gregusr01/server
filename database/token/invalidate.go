@@ -23,7 +23,7 @@ func (e *engine) InvalidateToken(t string) error {
 
 	tk := token{
 		TokenHash: sql.NullString{String: t, Valid: true},
-		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true}
+		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	}
 
 	// send query to the database

@@ -5,6 +5,7 @@
 package token
 
 import (
+	"database/sql"
 	"errors"
 )
 
