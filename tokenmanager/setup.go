@@ -33,6 +33,12 @@ type Setup struct {
 
 	// specifies the token duration to use for the worker authentication token
 	AuthTokenDuration time.Duration
+
+	// specifies the interval for cleanup
+	TokenCleanupInterval time.Duration
+
+	// specifies the interval for the ticker
+	TickerInterval time.Duration
 }
 
 // Tokenmanager creates and returns a Vela tokenmanager service
@@ -67,5 +73,7 @@ func (s *Setup) Minter() (Service, error) {
 		minter.WithRegTokenDuration(s.RegTokenDuration),
 		minter.WithAuthTokenDuration(s.AuthTokenDuration),
 		minter.WithDatabase(s.Database),
+		minter.WithTokenCleanupInterval(s.TokenCleanupInterval),
+		minter.WithTickerInterval(s.TickerInterval),
 	)
 }

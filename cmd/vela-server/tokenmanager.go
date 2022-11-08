@@ -30,14 +30,15 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	pk := &k.PublicKey
 
 	_manager := &tokenmanager.Setup{
-		Driver:            "minter",
-		Database:          d,
-		PrivKey:           k,
-		PubKey:            pk,
-		SignMethod:        jwt.SigningMethodRS256,
-		RegTokenDuration:  time.Minute * 10,
-		AuthTokenDuration: time.Minute * 10,
-		TokenCleanupDuration: time.Minute * 5,  //THIS TIME MUUUUUST BE EQUAL TO OR LONGER THAN THE DURATION OF THE TOKENS!!!!!!!!!!!!
+		Driver:               "minter",
+		Database:             d,
+		PrivKey:              k,
+		PubKey:               pk,
+		SignMethod:           jwt.SigningMethodRS256,
+		RegTokenDuration:     time.Minute * 10,
+		AuthTokenDuration:    time.Minute * 10,
+		TokenCleanupInterval: time.Minute * 5, //THIS TIME MUUUUUST BE EQUAL TO OR LONGER THAN THE DURATION OF THE TOKENS!!!!!!!!!!!!
+		TickerInterval:       time.Minute * 1,
 	}
 
 	return tokenmanager.New(_manager)

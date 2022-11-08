@@ -4,6 +4,8 @@
 
 package token
 
+import "time"
+
 // TokenService represents the Vela interface for token manager
 // functions with the supported Database backends.
 //
@@ -22,5 +24,6 @@ type TokenService interface {
 	// GetInvalidToken defines a function that gets a token hash from the invalid_tokens table
 	GetInvalidToken(string) error
 
-	DeleteInvalidTokens() error
+	// DeleteInvalidTokens defines a function that deletes invalid tokens based on specified interval
+	DeleteInvalidTokens(time.Duration) error
 }
