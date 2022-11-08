@@ -21,7 +21,7 @@ func (e *engine) DeleteInvalidTokens() error {
 	// https://pkg.go.dev/github.com/go-vela/types/database#PipelineFromLibrary
 	//pipeline := database.PipelineFromLibrary(p)
 
-	ts := time.Now().Add(-time.Minute * 1).Unix()
+	ts := time.Now().Add(-e.Config.TokenCleanupDuration).Unix()
 
 	logrus.Info("TS: ", ts)
 
