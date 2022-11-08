@@ -25,9 +25,19 @@ func (e *engine) DeleteInvalidTokens() error {
 
 	logrus.Info("TS: ", ts)
 
+  //token struct - this should be added to library later
+  type token struct {
+    TokenHash sql.NullString `sql:"token_hash"`
+    Timestamp sql.NullInt64  `sql:"timestamp"`
+  }
+
+  //var tk string
+  var tk token
+
 	// send query to the database
 	return e.client.
 		Table("invalid_tokens").
-		Delete("timestamp < ?", ts).
+		Where("timestamp < ?", ts).
+    Delete(&tk).
 		Error
 }
