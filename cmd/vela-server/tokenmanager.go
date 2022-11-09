@@ -28,7 +28,7 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 		logrus.Trace("error generating key pair")
 	}
 
-		pk := &k.PublicKey
+	pk := &k.PublicKey
 
 	//generate Kid value
 	k := "test" + time.Now().Unix().String()
@@ -45,8 +45,6 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 		Database:          d,
 		PrivKey:           k,
 		PubKey:            pk,
-		//PubKeyCache *map[string]*rsa.PublicKey,
-		//Kid:             string,
 		SignMethod:        jwt.SigningMethodRS256,
 		RegTokenDuration:  time.Minute * 10,
 		AuthTokenDuration: time.Minute * 10,

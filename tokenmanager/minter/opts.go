@@ -95,3 +95,27 @@ func WithDatabase(d database.Service) ClientOpt {
 		return nil
 	}
 }
+
+// WithTokenCleanupInterval sets the token interval in the secret client for Vault.
+func WithTokenCleanupInterval(tokenCleanupInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for token cleanup duration")
+
+		// set the token duration in the vault client
+		c.config.TokenCleanupInterval = tokenCleanupInterval
+
+		return nil
+	}
+}
+
+// WithTokenCleanupInterval sets the token interval in the secret client for Vault.
+func WithTickerInterval(tickerInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for ticker")
+
+		// set the ticker interval in config
+		c.config.TickerInterval = tickerInterval
+
+		return nil
+	}
+}

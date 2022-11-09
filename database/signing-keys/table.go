@@ -11,20 +11,24 @@ const (
 	CreatePostgresTable = `
 CREATE TABLE
 IF NOT EXISTS
-invalid_tokens (
-	token_hash    VARCHAR(250),
+signing_keys (
+	kid    VARCHAR(250),
+	public_key    VARCHAR(250),
+	server_name    VARCHAR(250),
 	timestamp    BIGINT,
-	UNIQUE(token_hash)
+	UNIQUE(kid)
 );`
 
 	// CreateSqliteTable represents a query to create the Sqlite invalid_tokens table.
 	CreateSqliteTable = `
 CREATE TABLE
 IF NOT EXISTS
-invalid_tokens (
-	token_hash    TEXT,
+signing_keys (
+	kid           TEXT,
+	public_key    TEXT,
+	server_name    TEXT,
 	timestamp    BIGINT,
-	UNIQUE(token_hash)
+	UNIQUE(kid)
 );`
 )
 

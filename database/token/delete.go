@@ -5,39 +5,29 @@
 package token
 
 import (
+	"database/sql"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 // DeletePipeline deletes an existing pipeline from the database.
-func (e *engine) DeleteInvalidTokens() error {
-	// e.logger.WithFields(logrus.Fields{
-	// 	"pipeline": p.GetCommit(),
-	// }).Tracef("deleting pipeline %s from the database", p.GetCommit())
+func (e *engine) DeleteInvalidTokens(tokenCleanupInterval time.Duration) error {
 
-	// cast the library type to database type
-	//
-	// https://pkg.go.dev/github.com/go-vela/types/database#PipelineFromLibrary
-	//pipeline := database.PipelineFromLibrary(p)
+	// Initializing token clean up interval
+	ts := time.Now().Add(-tokenCleanupInterval).Unix()
 
-	ts := time.Now().Add(-e.Config.TokenCleanupDuration).Unix()
+	//token struct - this should be added to library later
+	type token struct {
+		TokenHash sql.NullString `sql:"token_hash"`
+		Timestamp sql.NullInt64  `sql:"timestamp"`
+	}
 
-	logrus.Info("TS: ", ts)
-
-  //token struct - this should be added to library later
-  type token struct {
-    TokenHash sql.NullString `sql:"token_hash"`
-    Timestamp sql.NullInt64  `sql:"timestamp"`
-  }
-
-  //var tk string
-  var tk token
+	//var tk string
+	var tk token
 
 	// send query to the database
 	return e.client.
 		Table("invalid_tokens").
 		Where("timestamp < ?", ts).
-    Delete(&tk).
+		Delete(&tk).
 		Error
 }

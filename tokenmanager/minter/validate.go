@@ -22,7 +22,12 @@ type AuthClaims struct {
 // ValidateToken validates a token using the public key
 func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
 
-	//pull pub key from postgres (or use priv key and derive pub)
+	//pull kid from token header
+
+	//pull pub key from c.config.PubKeyCache[KID]
+
+	//if key not exist in PubKeyCache
+		// ???get individual key from DB???
 
 	tkn, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return c.config.PubKey, nil
@@ -36,10 +41,6 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 
 	//validate not part of invalidationDB
 	//hash token
-	// th := sha1.Sum([]byte(token))
-
-	// sth := base64.URLEncoding.EncodeToString(th)
-
 	hasher := sha1.New()
 	hasher.Write([]byte(token))
 	sth := base64.URLEncoding.EncodeToString(hasher.Sum(nil))

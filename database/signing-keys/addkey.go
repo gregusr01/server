@@ -16,7 +16,7 @@ func (e *engine) AddSigningKey(k, pk, s string) error {
 
 	sk := signingKey{
 		Kid: sql.NullString{String: k, Valid: true},
-		PublicKey: sql.NullString{String: pk, Valid: true},
+		PublicKey: byte.NullString{String: pk, Valid: true},
 		ServerName: sql.NullString{String: s, Valid: true},
 		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	}

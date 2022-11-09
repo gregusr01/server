@@ -242,4 +242,6 @@ type Service interface {
 	DeleteWorker(int64) error
 
 	token.TokenService
+
+	signingkeys.SigningKeyService
 }
