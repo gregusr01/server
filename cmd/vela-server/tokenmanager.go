@@ -31,22 +31,21 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	pk := &k.PublicKey
 
 	//generate Kid value
-	k := "test" + time.Now().Unix().String()
+	kid := "test" + string(time.Now().Unix())
 
 	//add public key to database
+	d.AddSigningKey(kid, "testserver", pk)
 
 	//build list of public keys (pull from database)
-
-	//PubKeyCache = PKlistFromDB()
-
+	var pubKeyCache = map[string]*rsa.PublicKey){kid: pk}
 
 	_manager := &tokenmanager.Setup{
 		Driver:            "minter",
 		Database:          d,
 		PrivKey:           k,
 		PubKey:            pk,
-		//PubKeyCache *map[string]*rsa.PublicKey,
-		//Kid:             string,
+		PubKeyCache: 			pubKeyCache,
+		Kid:             kid,
 		SignMethod:        jwt.SigningMethodRS256,
 		RegTokenDuration:  time.Minute * 10,
 		AuthTokenDuration: time.Minute * 10,

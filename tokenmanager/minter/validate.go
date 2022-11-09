@@ -22,15 +22,22 @@ type AuthClaims struct {
 // ValidateToken validates a token using the public key
 func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
 
-	//pull kid from token header
-
-	//pull pub key from c.config.PubKeyCache[KID]
-
-	//if key not exist in PubKeyCache
-		// ???get individual key from DB???
-
 	tkn, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return c.config.PubKey, nil
+		//pull kid from token header
+		kid := getKid(token)
+
+		//pull pub key from c.config.PubKeyCache[KID]
+		if k, ok := c.config.PubKeyCache[kid]; ok {
+    	return k, nil
+		}
+
+		//check db for signing key
+		k, err := c.Database.GetSigningKey(kid)
+		if err != nil {
+			return nil, err
+		}
+
+		return convertKeyString(k), nil
 	})
 	if err != nil {
 		return nil, errors.New("failed parsing: " + err.Error())
@@ -79,4 +86,29 @@ func parseAuthClaims(token *jwt.Token) (*AuthClaims, error) {
 		Exp:       time.Unix(int64(expTime), 0),
 		Sub:       claims["sub"].(string),
 	}, nil
+}
+
+// Kid returns the key-identifier (kid) value of the key that signed the token
+// or an error if the kid is not present.
+func getKid(t string) (string, error) {
+	parts := strings.Split(t, ".")
+	if len(parts) != 3 {
+		return "", errors.New("invalid token length")
+	}
+
+	b, err := base64.RawURLEncoding.DecodeString(parts[0])
+	if err != nil {
+		return "", err
+	}
+
+	var claims map[string]string
+	if err := json.Unmarshal(b, &claims); err != nil {
+		return "", err
+	}
+
+	kid, ok := claims["kid"]
+	if !ok {
+		return "", errors.New("missing kid")
+	}
+	return kid, nil
 }

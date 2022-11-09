@@ -17,11 +17,11 @@ type SigningKeyService interface {
 	CreateSigningKeyTable(string) error
 
 	// InvalidateToken defines a function that adds a token hash to the invalid_tokens table
-	AddSigningKey(string) error
+	AddSigningKey(string, string, *rsa.PublicKey) error
 
-	GetKey(string) error
+	GetSigningKey(string) error
 
-	ListKeys(string) error
+	ListKeys() error
 
 	//UpdateKeyTTL(string) error
 

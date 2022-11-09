@@ -11,12 +11,15 @@ import (
 )
 
 // InvalidateToken adds a token hash to the token_invalidate database.
-func (e *engine) AddSigningKey(k, pk, s string) error {
+func (e *engine) AddSigningKey(k, s string, pk *rsa.PublicKey) error {
 	e.logger.Tracef("Adding new public key to signing key database")
+
+	x509pk := x509.MarshalPKCS1PublicKey(pk)
+	b64 := base64.StdEncoding.EncodeToString(x509pk)
 
 	sk := signingKey{
 		Kid: sql.NullString{String: k, Valid: true},
-		PublicKey: byte.NullString{String: pk, Valid: true},
+		PublicKey: sql.NullString{String: b64, Valid: true},
 		ServerName: sql.NullString{String: s, Valid: true},
 		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	}

@@ -119,3 +119,27 @@ func WithTickerInterval(tickerInterval time.Duration) ClientOpt {
 		return nil
 	}
 }
+
+// WithPubKeyCache sets the cache in which public keys will be served
+func WithPubKeyCache(pubKeycache map[string]*rsa.PublicKey) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring public key for token validation")
+
+		// set the token duration in the vault client
+		c.config.PubKeyCache = pubKeycache
+
+		return nil
+	}
+}
+
+// WithKid sets the key identifier that will be stamped in every token
+func WithKid(pubKeycache string) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring public key for token validation")
+
+		// set the token duration in the vault client
+		c.config.Kid = pubKeycache
+
+		return nil
+	}
+}

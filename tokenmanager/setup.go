@@ -75,5 +75,7 @@ func (s *Setup) Minter() (Service, error) {
 		minter.WithDatabase(s.Database),
 		minter.WithTokenCleanupInterval(s.TokenCleanupInterval),
 		minter.WithTickerInterval(s.TickerInterval),
+		minter.WithKid(s.Kid),
+		minter.WithPubKeyCache(s.PublicKeyCache),
 	)
 }

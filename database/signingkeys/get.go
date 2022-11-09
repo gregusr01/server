@@ -10,11 +10,11 @@ import (
 )
 
 // GetInvalidToken checks for an existing token from the database.
-func (e *engine) GetKey(k string) (signingKey, error) {
+func (e *engine) GetSigningKey(k string) (*rsa.PublicKey, error) {
 	e.logger.Tracef("attempting to retrieve key %s from database", k)
 
 	//var tk string
-	var sk signingKey
+	var sk string
 
 	// send query to the database and store result in variable
 	err := e.client.
@@ -27,6 +27,16 @@ func (e *engine) GetKey(k string) (signingKey, error) {
 	}
 
 	e.logger.Tracef("what we got back: %s", sk)
+
+	//decode public key
+	unB64, err := base64.StdEncoding.DecodeString(v.PublicKey)
+
+	if err != nil {
+		logrus.Info("unable to decode public key", err)
+	}
+
+	//parse into pub key format
+	pubKeys[v.Kid] := x509.ParsePKCS1PublicKey(unB64)
 
 	// if we got something
 	return sk, nil

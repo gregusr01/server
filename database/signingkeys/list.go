@@ -10,6 +10,7 @@ import (
 )
 
 //signingKey struct - this should be added to library later
+//signingKey struct - this should be added to library later
 type signingKey struct {
 	Kid 				sql.NullString `sql:"kid"`
 	PublicKey 	sql.NullString `sql:"public_key"`
@@ -18,7 +19,7 @@ type signingKey struct {
 }
 
 // GetInvalidToken checks for an existing token from the database.
-func (e *engine) ListKeys(t string) ([]signingKey,error) {
+func (e *engine) ListKeys() ([]signingKey,error) {
 	e.logger.Tracef("retrieving list of signing keys from database")
 
 	//var tk string
