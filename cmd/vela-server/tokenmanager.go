@@ -27,13 +27,26 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	if err != nil {
 		logrus.Trace("error generating key pair")
 	}
-	pk := &k.PublicKey
+
+		pk := &k.PublicKey
+
+	//generate Kid value
+	k := "test" + time.Now().Unix().String()
+
+	//add public key to database
+
+	//build list of public keys (pull from database)
+
+	//PubKeyCache = PKlistFromDB()
+
 
 	_manager := &tokenmanager.Setup{
 		Driver:            "minter",
 		Database:          d,
 		PrivKey:           k,
 		PubKey:            pk,
+		//PubKeyCache *map[string]*rsa.PublicKey,
+		//Kid:             string,
 		SignMethod:        jwt.SigningMethodRS256,
 		RegTokenDuration:  time.Minute * 10,
 		AuthTokenDuration: time.Minute * 10,
