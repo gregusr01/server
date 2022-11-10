@@ -27,7 +27,7 @@ func (e *engine) ListSigningKeys() ([]signingKey, error) {
 	// send query to the database and store result in variable
 	err := e.client.
 		Table("signing_keys").
-		Take(&sk).
+		Find(&sk).
 		Error
 	if err != nil {
 		return nil, err
