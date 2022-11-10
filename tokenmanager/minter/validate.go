@@ -36,6 +36,8 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 			return k, nil
 		}
 
+		logrus.Info("KID not part of cache, checking database")
+
 		//check db for signing key
 		k, err := c.Database.GetSigningKey(kid)
 		if err != nil {
