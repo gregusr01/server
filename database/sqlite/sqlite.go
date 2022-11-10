@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-vela/server/database/pipeline"
 	"github.com/go-vela/server/database/repo"
+	"github.com/go-vela/server/database/signingkeys"
 	"github.com/go-vela/server/database/sqlite/ddl"
 	"github.com/go-vela/server/database/token"
 	"github.com/go-vela/server/database/user"
@@ -52,6 +53,8 @@ type (
 		user.UserService
 
 		token.TokenService
+
+		signingkeys.SigningKeyService
 	}
 )
 
@@ -387,6 +390,14 @@ func createServices(c *client) error {
 		token.WithClient(c.Sqlite),
 		token.WithLogger(c.Logger),
 		token.WithSkipCreation(c.config.SkipCreation),
+	)
+	if err != nil {
+		return err
+	}
+	c.SigningKeyService, err = signingkeys.New(
+		signingkeys.WithClient(c.Sqlite),
+		signingkeys.WithLogger(c.Logger),
+		signingkeys.WithSkipCreation(c.config.SkipCreation),
 	)
 	if err != nil {
 		return err

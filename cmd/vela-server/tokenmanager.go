@@ -7,6 +7,7 @@ package main
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"fmt"
 	"time"
 
 	"github.com/go-vela/server/database"
@@ -27,29 +28,28 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	if err != nil {
 		logrus.Trace("error generating key pair")
 	}
-
 	pk := &k.PublicKey
-
 	//generate Kid value
-	kid := "test" + string(time.Now().Unix())
-
+	kid := fmt.Sprintf("test%v", time.Now().Unix())
 	//add public key to database
-	d.AddSigningKey(kid, "testserver", pk)
-
+	if err := d.AddSigningKey(kid, "testserver", pk); err != nil {
+		logrus.Trace("error adding signing key")
+	}
 	//build list of public keys (pull from database)
-	var pubKeyCache = map[string]*rsa.PublicKey){kid: pk}
+	pubKeyCache := map[string]*rsa.PublicKey{kid: pk}
 
 	_manager := &tokenmanager.Setup{
-		Driver:            "minter",
-		Database:          d,
-		PrivKey:           k,
-		PubKey:            pk,
-		PubKeyCache: 			pubKeyCache,
-		Kid:             kid,
-		SignMethod:        jwt.SigningMethodRS256,
-		RegTokenDuration:  time.Minute * 10,
-		AuthTokenDuration: time.Minute * 10,
-		TokenCleanupDuration: time.Minute * 5,  //THIS TIME MUUUUUST BE EQUAL TO OR LONGER THAN THE DURATION OF THE TOKENS!!!!!!!!!!!!
+		Driver:               "minter",
+		Database:             d,
+		PrivKey:              k,
+		PubKey:               pk,
+		PublicKeyCache:       pubKeyCache,
+		Kid:                  kid,
+		SignMethod:           jwt.SigningMethodRS256,
+		RegTokenDuration:     time.Minute * 10,
+		AuthTokenDuration:    time.Minute * 10,
+		TickerInterval:       time.Minute * 1,
+		TokenCleanupInterval: time.Minute * 5, //THIS TIME MUUUUUST BE EQUAL TO OR LONGER THAN THE DURATION OF THE TOKENS!!!!!!!!!!!!
 	}
 
 	return tokenmanager.New(_manager)

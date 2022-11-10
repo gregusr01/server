@@ -4,8 +4,10 @@ import (
 	"context"
 	"crypto/sha1"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -22,13 +24,16 @@ type AuthClaims struct {
 // ValidateToken validates a token using the public key
 func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
 
-	tkn, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	tkn, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		//pull kid from token header
-		kid := getKid(token)
+		kid, err := getKid(token)
+		if err != nil {
+			return nil, err
+		}
 
 		//pull pub key from c.config.PubKeyCache[KID]
-		if k, ok := c.config.PubKeyCache[kid]; ok {
-    	return k, nil
+		if k, ok := c.config.PublicKeyCache[kid]; ok {
+			return k, nil
 		}
 
 		//check db for signing key
@@ -37,7 +42,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 			return nil, err
 		}
 
-		return convertKeyString(k), nil
+		return k, nil
 	})
 	if err != nil {
 		return nil, errors.New("failed parsing: " + err.Error())

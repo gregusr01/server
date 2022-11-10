@@ -25,6 +25,11 @@ type Setup struct {
 	//Public Key Used to Validate Token
 	PubKey *rsa.PublicKey
 
+	//Key ID for the signing key
+	Kid string
+
+	PublicKeyCache map[string]*rsa.PublicKey
+
 	//Token SigningMethod
 	SignMethod jwt.SigningMethod
 

@@ -6,7 +6,10 @@
 package signingkeys
 
 import (
+	"crypto/rsa"
+	"crypto/x509"
 	"database/sql"
+	"encoding/base64"
 	"time"
 )
 
@@ -18,10 +21,10 @@ func (e *engine) AddSigningKey(k, s string, pk *rsa.PublicKey) error {
 	b64 := base64.StdEncoding.EncodeToString(x509pk)
 
 	sk := signingKey{
-		Kid: sql.NullString{String: k, Valid: true},
-		PublicKey: sql.NullString{String: b64, Valid: true},
+		Kid:        sql.NullString{String: k, Valid: true},
+		PublicKey:  sql.NullString{String: b64, Valid: true},
 		ServerName: sql.NullString{String: s, Valid: true},
-		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
+		Timestamp:  sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	}
 
 	// send query to the database

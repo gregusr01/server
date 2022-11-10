@@ -26,4 +26,6 @@ type Service interface {
 	InvalidateToken(context.Context, string) error
 
 	CleanInvalidTokens()
+
+	RefreshKeyCache()
 }

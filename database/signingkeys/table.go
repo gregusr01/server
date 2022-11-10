@@ -13,7 +13,7 @@ CREATE TABLE
 IF NOT EXISTS
 signing_keys (
 	kid    VARCHAR(250),
-	public_key    VARCHAR(250),
+	public_key    VARCHAR(500),
 	server_name    VARCHAR(250),
 	timestamp    BIGINT,
 	UNIQUE(kid)

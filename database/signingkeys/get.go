@@ -5,8 +5,11 @@
 package signingkeys
 
 import (
-	"database/sql"
-	"errors"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/base64"
+
+	"github.com/sirupsen/logrus"
 )
 
 // GetInvalidToken checks for an existing token from the database.
@@ -14,7 +17,7 @@ func (e *engine) GetSigningKey(k string) (*rsa.PublicKey, error) {
 	e.logger.Tracef("attempting to retrieve key %s from database", k)
 
 	//var tk string
-	var sk string
+	var sk signingKey
 
 	// send query to the database and store result in variable
 	err := e.client.
@@ -23,21 +26,24 @@ func (e *engine) GetSigningKey(k string) (*rsa.PublicKey, error) {
 		Take(&sk).
 		Error
 	if err != nil {
-		return signingKey{}, err
+		return nil, err
 	}
 
 	e.logger.Tracef("what we got back: %s", sk)
 
 	//decode public key
-	unB64, err := base64.StdEncoding.DecodeString(v.PublicKey)
+	unB64, err := base64.StdEncoding.DecodeString(sk.PublicKey.String)
 
 	if err != nil {
 		logrus.Info("unable to decode public key", err)
 	}
 
 	//parse into pub key format
-	pubKeys[v.Kid] := x509.ParsePKCS1PublicKey(unB64)
+	pubKey, err := x509.ParsePKCS1PublicKey(unB64)
+	if err != nil {
+		logrus.Info("unable to parse public key string", err)
+	}
 
 	// if we got something
-	return sk, nil
+	return pubKey, nil
 }

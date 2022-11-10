@@ -6,20 +6,19 @@ package signingkeys
 
 import (
 	"database/sql"
-	"errors"
 )
 
 //signingKey struct - this should be added to library later
 //signingKey struct - this should be added to library later
 type signingKey struct {
-	Kid 				sql.NullString `sql:"kid"`
-	PublicKey 	sql.NullString `sql:"public_key"`
-	ServerName	sql.NullString `sql:"server_name"`
-	Timestamp 	sql.NullInt64  `sql:"timestamp"`
+	Kid        sql.NullString `sql:"kid"`
+	PublicKey  sql.NullString `sql:"public_key"`
+	ServerName sql.NullString `sql:"server_name"`
+	Timestamp  sql.NullInt64  `sql:"timestamp"`
 }
 
 // GetInvalidToken checks for an existing token from the database.
-func (e *engine) ListKeys() ([]signingKey,error) {
+func (e *engine) ListSigningKeys() ([]signingKey, error) {
 	e.logger.Tracef("retrieving list of signing keys from database")
 
 	//var tk string

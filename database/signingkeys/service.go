@@ -4,6 +4,8 @@
 
 package signingkeys
 
+import "crypto/rsa"
+
 // TokenService represents the Vela interface for token manager
 // functions with the supported Database backends.
 //
@@ -19,9 +21,9 @@ type SigningKeyService interface {
 	// InvalidateToken defines a function that adds a token hash to the invalid_tokens table
 	AddSigningKey(string, string, *rsa.PublicKey) error
 
-	GetSigningKey(string) error
+	GetSigningKey(string) (*rsa.PublicKey, error)
 
-	ListKeys() error
+	ListSigningKeys() ([]signingKey, error)
 
 	//UpdateKeyTTL(string) error
 

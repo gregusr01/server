@@ -126,7 +126,7 @@ func WithPubKeyCache(pubKeycache map[string]*rsa.PublicKey) ClientOpt {
 		c.Logger.Trace("configuring public key for token validation")
 
 		// set the token duration in the vault client
-		c.config.PubKeyCache = pubKeycache
+		c.config.PublicKeyCache = pubKeycache
 
 		return nil
 	}

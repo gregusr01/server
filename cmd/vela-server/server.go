@@ -84,9 +84,9 @@ func server(c *cli.Context) error {
 	}
 
 	//setup goroutine for tokenCleanup
-	go tknMangr.CleanTokens()
+	go tknMangr.CleanInvalidTokens()
 
-	//go tknMangr.UpdateSigningKeyCache()
+	go tknMangr.RefreshKeyCache()
 
 	//go tknMangr.CleanExpiredSigningKeys()
 
