@@ -43,7 +43,11 @@ type Setup struct {
 	TokenCleanupInterval time.Duration
 
 	// specifies the interval for the ticker
-	TickerInterval time.Duration
+	TokenTickerInterval time.Duration
+
+	KeyCleanupInterval time.Duration
+
+	KeyTickerInterval time.Duration
 }
 
 // Tokenmanager creates and returns a Vela tokenmanager service
@@ -79,7 +83,9 @@ func (s *Setup) Minter() (Service, error) {
 		minter.WithAuthTokenDuration(s.AuthTokenDuration),
 		minter.WithDatabase(s.Database),
 		minter.WithTokenCleanupInterval(s.TokenCleanupInterval),
-		minter.WithTickerInterval(s.TickerInterval),
+		minter.WithTokenTickerInterval(s.TokenTickerInterval),
+		minter.WithKeyCleanupInterval(s.KeyCleanupInterval),
+		minter.WithKeyTickerInterval(s.KeyTickerInterval),
 		minter.WithKid(s.Kid),
 		minter.WithPubKeyCache(s.PublicKeyCache),
 	)

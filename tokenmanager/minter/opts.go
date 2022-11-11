@@ -108,13 +108,35 @@ func WithTokenCleanupInterval(tokenCleanupInterval time.Duration) ClientOpt {
 	}
 }
 
+func WithKeyCleanupInterval(keyCleanupInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for token cleanup duration")
+
+		// set the token duration in the vault client
+		c.config.KeyCleanupInterval = keyCleanupInterval
+
+		return nil
+	}
+}
+
 // WithTokenCleanupInterval sets the token interval in the secret client for Vault.
-func WithTickerInterval(tickerInterval time.Duration) ClientOpt {
+func WithTokenTickerInterval(tokenTickerInterval time.Duration) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring interval for ticker")
 
 		// set the ticker interval in config
-		c.config.TickerInterval = tickerInterval
+		c.config.TokenTickerInterval = tokenTickerInterval
+
+		return nil
+	}
+}
+
+func WithKeyTickerInterval(keyTickerInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for ticker")
+
+		// set the ticker interval in config
+		c.config.KeyTickerInterval = keyTickerInterval
 
 		return nil
 	}

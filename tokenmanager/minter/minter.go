@@ -18,7 +18,9 @@ type config struct {
 	RegTokenDuration     time.Duration
 	AuthTokenDuration    time.Duration
 	TokenCleanupInterval time.Duration
-	TickerInterval       time.Duration
+	TokenTickerInterval  time.Duration
+	KeyCleanupInterval   time.Duration
+	KeyTickerInterval    time.Duration
 }
 
 type client struct {
