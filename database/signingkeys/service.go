@@ -4,7 +4,10 @@
 
 package signingkeys
 
-import "crypto/rsa"
+import (
+	"crypto/rsa"
+	"time"
+)
 
 // TokenService represents the Vela interface for token manager
 // functions with the supported Database backends.
@@ -25,7 +28,7 @@ type SigningKeyService interface {
 
 	ListSigningKeys() ([]signingKey, error)
 
-	//UpdateKeyTTL(string) error
+	DeleteExpiredKeys(time.Duration) error
 
-	//DeleteExpiredKeys() error
+	UpdateKeyTTL(string) error
 }

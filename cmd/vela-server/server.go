@@ -88,7 +88,7 @@ func server(c *cli.Context) error {
 
 	go tknMangr.RefreshKeyCache()
 
-	//go tknMangr.CleanExpiredSigningKeys()
+	go tknMangr.CleanExpiredSigningKeys()
 
 	metadata, err := setupMetadata(c)
 	if err != nil {

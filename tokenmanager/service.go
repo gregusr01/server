@@ -27,5 +27,7 @@ type Service interface {
 
 	CleanInvalidTokens()
 
+	CleanExpiredSigningKeys()
+
 	RefreshKeyCache()
 }

@@ -27,6 +27,10 @@ func (c *client) RefreshKeyCache() {
 
 			//retrieve list of valid public signing keys
 
+			if err := c.Database.UpdateKeyTTL(c.config.Kid); err != nil {
+				logrus.Infof("unable to update key ttl for key kid: %s", c.config.Kid)
+			}
+
 			DBkeys, err := c.Database.ListSigningKeys()
 			if err != nil {
 				logrus.Info("Error retrieving list of public signing keys", err)
