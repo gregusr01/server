@@ -25,6 +25,7 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	logrus.Debug("Creating tokenManger for server worker authentication")
 
 	keyLoc := c.String("signing-key-path")
+	var k crypto.PrivateKey
 
 	switch keyLoc {
 	case "":
