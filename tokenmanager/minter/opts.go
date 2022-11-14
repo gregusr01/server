@@ -95,3 +95,73 @@ func WithDatabase(d database.Service) ClientOpt {
 		return nil
 	}
 }
+
+// WithTokenCleanupInterval sets the token interval in the secret client for Vault.
+func WithTokenCleanupInterval(tokenCleanupInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for token cleanup duration")
+
+		// set the token duration in the vault client
+		c.config.TokenCleanupInterval = tokenCleanupInterval
+
+		return nil
+	}
+}
+
+func WithKeyCleanupInterval(keyCleanupInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for token cleanup duration")
+
+		// set the token duration in the vault client
+		c.config.KeyCleanupInterval = keyCleanupInterval
+
+		return nil
+	}
+}
+
+// WithTokenCleanupInterval sets the token interval in the secret client for Vault.
+func WithTokenTickerInterval(tokenTickerInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for ticker")
+
+		// set the ticker interval in config
+		c.config.TokenTickerInterval = tokenTickerInterval
+
+		return nil
+	}
+}
+
+func WithKeyTickerInterval(keyTickerInterval time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring interval for ticker")
+
+		// set the ticker interval in config
+		c.config.KeyTickerInterval = keyTickerInterval
+
+		return nil
+	}
+}
+
+// WithPubKeyCache sets the cache in which public keys will be served
+func WithPubKeyCache(pubKeycache map[string]*rsa.PublicKey) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring public key for token validation")
+
+		// set the token duration in the vault client
+		c.config.PublicKeyCache = pubKeycache
+
+		return nil
+	}
+}
+
+// WithKid sets the key identifier that will be stamped in every token
+func WithKid(pubKeycache string) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Trace("configuring public key for token validation")
+
+		// set the token duration in the vault client
+		c.config.Kid = pubKeycache
+
+		return nil
+	}
+}

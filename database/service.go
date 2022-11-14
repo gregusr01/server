@@ -7,6 +7,7 @@ package database
 import (
 	"github.com/go-vela/server/database/pipeline"
 	"github.com/go-vela/server/database/repo"
+	"github.com/go-vela/server/database/signingkeys"
 	"github.com/go-vela/server/database/token"
 	"github.com/go-vela/server/database/user"
 	"github.com/go-vela/types/library"
@@ -242,4 +243,6 @@ type Service interface {
 	DeleteWorker(int64) error
 
 	token.TokenService
+
+	signingkeys.SigningKeyService
 }

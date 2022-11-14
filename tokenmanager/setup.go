@@ -25,6 +25,11 @@ type Setup struct {
 	//Public Key Used to Validate Token
 	PubKey *rsa.PublicKey
 
+	//Key ID for the signing key
+	Kid string
+
+	PublicKeyCache map[string]*rsa.PublicKey
+
 	//Token SigningMethod
 	SignMethod jwt.SigningMethod
 
@@ -33,6 +38,16 @@ type Setup struct {
 
 	// specifies the token duration to use for the worker authentication token
 	AuthTokenDuration time.Duration
+
+	// specifies the interval for cleanup
+	TokenCleanupInterval time.Duration
+
+	// specifies the interval for the ticker
+	TokenTickerInterval time.Duration
+
+	KeyCleanupInterval time.Duration
+
+	KeyTickerInterval time.Duration
 }
 
 // Tokenmanager creates and returns a Vela tokenmanager service
@@ -67,5 +82,11 @@ func (s *Setup) Minter() (Service, error) {
 		minter.WithRegTokenDuration(s.RegTokenDuration),
 		minter.WithAuthTokenDuration(s.AuthTokenDuration),
 		minter.WithDatabase(s.Database),
+		minter.WithTokenCleanupInterval(s.TokenCleanupInterval),
+		minter.WithTokenTickerInterval(s.TokenTickerInterval),
+		minter.WithKeyCleanupInterval(s.KeyCleanupInterval),
+		minter.WithKeyTickerInterval(s.KeyTickerInterval),
+		minter.WithKid(s.Kid),
+		minter.WithPubKeyCache(s.PublicKeyCache),
 	)
 }

@@ -5,6 +5,7 @@
 package token
 
 import (
+	"database/sql"
 	"errors"
 )
 
@@ -12,12 +13,14 @@ import (
 func (e *engine) GetInvalidToken(t string) error {
 	e.logger.Tracef("getting token hash from the database")
 
-	// variable to store query results
-	// type token struct {
-	// 	Ts sql.NullString `sql:"token_hash"`
-	// }
+	//token struct - this should be added to library later
+	type token struct {
+		TokenHash sql.NullString `sql:"token_hash"`
+		Timestamp sql.NullInt64  `sql:"timestamp"`
+	}
 
-	var tk string
+	//var tk string
+	var tk token
 
 	// send query to the database and store result in variable
 	err := e.client.
@@ -37,5 +40,4 @@ func (e *engine) GetInvalidToken(t string) error {
 
 	// if we got something
 	return errors.New("token hash found inside invalidation database")
-
 }

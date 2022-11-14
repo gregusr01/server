@@ -2,7 +2,6 @@
 //
 // Use of this source code is governed by the LICENSE file in this repository.
 
-//nolint:dupl // ignore similar code with update.go
 package token
 
 import (
@@ -10,25 +9,25 @@ import (
 	"time"
 )
 
-// InvalidateToken adds a token hash to the token_invalidate database.
-func (e *engine) InvalidateToken(t string) error {
-	e.logger.Tracef("Invalidating token")
+// DeletePipeline deletes an existing pipeline from the database.
+func (e *engine) DeleteInvalidTokens(tokenCleanupInterval time.Duration) error {
 
-	//any vaidation we can do on hash?
+	// Initializing token clean up interval
+	ts := time.Now().Add(-tokenCleanupInterval).Unix()
 
+	//token struct - this should be added to library later
 	type token struct {
 		TokenHash sql.NullString `sql:"token_hash"`
 		Timestamp sql.NullInt64  `sql:"timestamp"`
 	}
 
-	tk := token{
-		TokenHash: sql.NullString{String: t, Valid: true},
-		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
-	}
+	//var tk string
+	var tk token
 
 	// send query to the database
 	return e.client.
 		Table("invalid_tokens").
-		Create(&tk).
+		Where("timestamp < ?", ts).
+		Delete(&tk).
 		Error
 }

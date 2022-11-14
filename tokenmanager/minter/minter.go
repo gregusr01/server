@@ -10,11 +10,17 @@ import (
 )
 
 type config struct {
-	PrivKey           *rsa.PrivateKey   //Private Key Used to Sign Token
-	PubKey            *rsa.PublicKey    //Public Key Used to Validate Token
-	SignMethod        jwt.SigningMethod //Token SigningMethod
-	RegTokenDuration  time.Duration
-	AuthTokenDuration time.Duration
+	PrivKey              *rsa.PrivateKey   //Private Key Used to Sign Token
+	PubKey               *rsa.PublicKey    //Public Key Used to Validate Token
+	SignMethod           jwt.SigningMethod //Token SigningMethod
+	Kid                  string
+	PublicKeyCache       map[string]*rsa.PublicKey
+	RegTokenDuration     time.Duration
+	AuthTokenDuration    time.Duration
+	TokenCleanupInterval time.Duration
+	TokenTickerInterval  time.Duration
+	KeyCleanupInterval   time.Duration
+	KeyTickerInterval    time.Duration
 }
 
 type client struct {

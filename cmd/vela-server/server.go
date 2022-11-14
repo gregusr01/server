@@ -83,6 +83,13 @@ func server(c *cli.Context) error {
 		return err
 	}
 
+	//setup goroutine for tokenCleanup
+	go tknMangr.CleanInvalidTokens()
+
+	go tknMangr.RefreshKeyCache()
+
+	go tknMangr.CleanExpiredSigningKeys()
+
 	metadata, err := setupMetadata(c)
 	if err != nil {
 		return err

@@ -24,4 +24,10 @@ type Service interface {
 
 	// InvalidateToken defines a function that invalidates a token by adding it to the invalidation table in the database
 	InvalidateToken(context.Context, string) error
+
+	CleanInvalidTokens()
+
+	CleanExpiredSigningKeys()
+
+	RefreshKeyCache()
 }

@@ -2,28 +2,33 @@
 //
 // Use of this source code is governed by the LICENSE file in this repository.
 
-package token
+package signingkeys
 
-import "time"
+import (
+	"crypto/rsa"
+	"time"
+)
 
 // TokenService represents the Vela interface for token manager
 // functions with the supported Database backends.
 //
 //nolint:revive // ignore name stutter
-type TokenService interface {
+type SigningKeyService interface {
 	// Token Data Definition Language Functions
 	//
 	// https://en.wikipedia.org/wiki/Data_definition_language
 
 	// CreateTokenTable defines a function that creates the invalid_tokens table.
-	CreateInvalidTokenTable(string) error
+	CreateSigningKeyTable(string) error
 
 	// InvalidateToken defines a function that adds a token hash to the invalid_tokens table
-	InvalidateToken(string) error
+	AddSigningKey(string, string, *rsa.PublicKey) error
 
-	// GetInvalidToken defines a function that gets a token hash from the invalid_tokens table
-	GetInvalidToken(string) error
+	GetSigningKey(string) (*rsa.PublicKey, error)
 
-	// DeleteInvalidTokens defines a function that deletes invalid tokens based on specified interval
-	DeleteInvalidTokens(time.Duration) error
+	ListSigningKeys() ([]signingKey, error)
+
+	DeleteExpiredKeys(time.Duration) error
+
+	UpdateKeyTTL(string) error
 }
