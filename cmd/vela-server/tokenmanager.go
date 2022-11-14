@@ -24,28 +24,32 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 
 	logrus.Debug("Creating tokenManger for server worker authentication")
 
-	keyLoc := c.Flag("keylocation")
+	keyLoc := c.String("signing-key-path")
 
-	if keyLoc == "" {
+	switch keyLoc {
+	case "":
+		logrus.Trace("no key defined generating one internally")
 		k, err := rsa.GenerateKey(rand.Reader, 2048)
 		if err != nil {
 			logrus.Trace("error generating key pair")
 		}
-	} else {
-
+	default:
 		//read key from file
-		bytes, err := ioutil.ReadFile(keyLoc)
+		pemBytes, err := ioutil.ReadFile(keyLoc)
 		if err != nil {
 			logrus.Trace("error reading key from location")
 		}
 
 		//decode pem
-		block, _ := pem.Decode([]byte(pemString))
+		block, err := pem.Decode(pemBytes)
+		if err != nil {
+			logrus.Trace("error decoding key")
+		}
 		k, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 		if err != nil {
 			logrus.Trace("error parsing key")
 		}
-		fmt.Println(k.N)
+		logrus.Tracef("successfully loaded key: %v", k.N)
 	}
 
 
