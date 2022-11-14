@@ -7,7 +7,11 @@ package main
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	"github.com/go-vela/server/database"
@@ -25,34 +29,38 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	logrus.Debug("Creating tokenManger for server worker authentication")
 
 	keyLoc := c.String("signing-key-path")
-	var k crypto.PrivateKey
+	var k *rsa.PrivateKey
+	var err error
 
 	switch keyLoc {
 	case "":
 		logrus.Trace("no key defined generating one internally")
-		k, err := rsa.GenerateKey(rand.Reader, 2048)
+		k, err = rsa.GenerateKey(rand.Reader, 2048)
 		if err != nil {
 			logrus.Trace("error generating key pair")
+			return nil, errors.New("unable to generate a new key pair")
 		}
 	default:
 		//read key from file
 		pemBytes, err := ioutil.ReadFile(keyLoc)
 		if err != nil {
 			logrus.Trace("error reading key from location")
+			return nil, errors.New("unable to read file for key pair generation")
 		}
 
 		//decode pem
-		block, err := pem.Decode(pemBytes)
-		if err != nil {
+		block, _ := pem.Decode(pemBytes)
+		if block == nil {
 			logrus.Trace("error decoding key")
+			return nil, errors.New("unable decode file into pem")
 		}
-		k, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+		k, err = x509.ParsePKCS1PrivateKey(block.Bytes)
 		if err != nil {
 			logrus.Trace("error parsing key")
+			return nil, errors.New("unable to parse the key from the block")
 		}
 		logrus.Tracef("successfully loaded key: %v", k.N)
 	}
-
 
 	pk := &k.PublicKey
 	//generate Kid value
