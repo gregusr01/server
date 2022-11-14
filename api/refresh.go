@@ -37,7 +37,7 @@ func SystemRefresh(c *gin.Context) {
 
 	// invalidate token
 	if err = tokenmanager.FromContext(c).InvalidateToken(c, t); err != nil {
-		retErr := fmt.Errorf("unable add token for to invalidation db: %s", err)
+		retErr := fmt.Errorf("unable to add token to the invalidation db: %s", err)
 		util.HandleError(c, http.StatusUnauthorized, retErr)
 		return
 	}

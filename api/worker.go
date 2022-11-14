@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/go-vela/server/router/middleware/user"
+	"github.com/go-vela/server/tokenmanager"
 
 	"github.com/go-vela/server/database"
 	"github.com/go-vela/server/router/middleware/worker"
@@ -56,11 +57,26 @@ func CreateWorker(c *gin.Context) {
 	// capture middleware values
 	u := user.Retrieve(c)
 
+	t := c.Request.Header.Get("Authorization")
+
+	claims, err := tokenmanager.FromContext(c).ValidateToken(c, t)
+	if err != nil {
+		retErr := fmt.Errorf("unable to validate token for worker: %w", err)
+		util.HandleError(c, http.StatusUnauthorized, retErr)
+		return
+
+	}
+
+	if *u.Name != claims.Sub {
+		retErr := fmt.Errorf("unable match user: %s with token subject: %s", u, claims.Sub)
+		util.HandleError(c, http.StatusUnauthorized, retErr)
+		return
+	}
+
 	// capture body from API request
 	input := new(library.Worker)
 
-	err := c.Bind(input)
-	if err != nil {
+	if err := c.Bind(input); err != nil {
 		retErr := fmt.Errorf("unable to decode JSON for new worker: %w", err)
 
 		util.HandleError(c, http.StatusBadRequest, retErr)
@@ -76,8 +92,7 @@ func CreateWorker(c *gin.Context) {
 		"worker": input.GetHostname(),
 	}).Infof("creating new worker %s", input.GetHostname())
 
-	err = database.FromContext(c).CreateWorker(input)
-	if err != nil {
+	if err := database.FromContext(c).CreateWorker(input); err != nil {
 		retErr := fmt.Errorf("unable to create worker: %w", err)
 
 		util.HandleError(c, http.StatusInternalServerError, retErr)
@@ -228,9 +243,26 @@ func GetWorker(c *gin.Context) {
 // UpdateWorker represents the API handler to
 // create a worker in the configured backend.
 func UpdateWorker(c *gin.Context) {
+
 	// capture middleware values
 	u := user.Retrieve(c)
 	w := worker.Retrieve(c)
+
+	t := c.Request.Header.Get("Authorization")
+
+	claims, err := tokenmanager.FromContext(c).ValidateToken(c, t)
+	if err != nil {
+		retErr := fmt.Errorf("unable to validate token for worker: %w", err)
+		util.HandleError(c, http.StatusUnauthorized, retErr)
+		return
+
+	}
+
+	if *w.Hostname != claims.Sub {
+		retErr := fmt.Errorf("unable match user: %s with token subject: %s", u, claims.Sub)
+		util.HandleError(c, http.StatusUnauthorized, retErr)
+		return
+	}
 
 	// update engine logger with API metadata
 	//
@@ -243,8 +275,7 @@ func UpdateWorker(c *gin.Context) {
 	// capture body from API request
 	input := new(library.Worker)
 
-	err := c.Bind(input)
-	if err != nil {
+	if err := c.Bind(input); err != nil {
 		retErr := fmt.Errorf("unable to decode JSON for worker %s: %w", w.GetHostname(), err)
 
 		util.HandleError(c, http.StatusBadRequest, retErr)
@@ -273,8 +304,7 @@ func UpdateWorker(c *gin.Context) {
 	}
 
 	// send API call to update the worker
-	err = database.FromContext(c).UpdateWorker(w)
-	if err != nil {
+	if err := database.FromContext(c).UpdateWorker(w); err != nil {
 		retErr := fmt.Errorf("unable to update worker %s: %w", w.GetHostname(), err)
 
 		util.HandleError(c, http.StatusInternalServerError, retErr)
@@ -316,9 +346,25 @@ func UpdateWorker(c *gin.Context) {
 // DeleteWorker represents the API handler to remove
 // a worker from the configured backend.
 func DeleteWorker(c *gin.Context) {
+
+	t := c.Request.Header.Get("Authorization")
+
+	claims, err := tokenmanager.FromContext(c).ValidateToken(c, t)
+	if err != nil {
+		retErr := fmt.Errorf("unable to validate token for worker: %w", err)
+		util.HandleError(c, http.StatusUnauthorized, retErr)
+		return
+
+	}
 	// capture middleware values
 	u := user.Retrieve(c)
 	w := worker.Retrieve(c)
+
+	if w.Hostname != &claims.Sub {
+		retErr := fmt.Errorf("unable match worker hostname: %s with token subject: %s", u, claims.Sub)
+		util.HandleError(c, http.StatusUnauthorized, retErr)
+		return
+	}
 
 	// update engine logger with API metadata
 	//
@@ -329,8 +375,7 @@ func DeleteWorker(c *gin.Context) {
 	}).Infof("deleting worker %s", w.GetHostname())
 
 	// send API call to remove the step
-	err := database.FromContext(c).DeleteWorker(w.GetID())
-	if err != nil {
+	if err := database.FromContext(c).DeleteWorker(w.GetID()); err != nil {
 		retErr := fmt.Errorf("unable to delete worker %s: %w", w.GetHostname(), err)
 
 		util.HandleError(c, http.StatusInternalServerError, retErr)
