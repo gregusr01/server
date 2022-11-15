@@ -172,6 +172,11 @@ func main() {
 			Usage:   "interval at which workers will show as active within the /metrics endpoint",
 			Value:   5 * time.Minute,
 		},
+		&cli.StringFlag{
+			EnvVars: []string{"VELA_SIGNING_KEY_PATH", "SIGNING_KEY_PATH"},
+			Name:    "signing-key-path",
+			Usage:   "used for a specified private key instead of the server generating a new one on its own",
+		},
 	}
 	// Add Database Flags
 	app.Flags = append(app.Flags, database.Flags...)
