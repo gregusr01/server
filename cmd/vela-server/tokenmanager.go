@@ -40,7 +40,10 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 			logrus.Trace("error generating key pair")
 			return nil, errors.New("unable to generate a new key pair")
 		}
+		logrus.Tracef("successfully generated private key")
 	default:
+
+		logrus.Info("using private key from command line")
 		//read key from file
 		pemBytes, err := ioutil.ReadFile(keyLoc)
 		if err != nil {
@@ -59,10 +62,11 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 			logrus.Trace("error parsing key")
 			return nil, errors.New("unable to parse the key from the block")
 		}
-		logrus.Tracef("successfully loaded key: %v", k.N)
+		logrus.Tracef("successfully loaded key from file")
 	}
 
 	pk := &k.PublicKey
+
 	//generate Kid value
 	kid := fmt.Sprintf("test%v", time.Now().Unix())
 	//add public key to database
