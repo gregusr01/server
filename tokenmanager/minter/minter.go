@@ -17,10 +17,10 @@ type config struct {
 	PublicKeyCache       map[string]*rsa.PublicKey
 	RegTokenDuration     time.Duration
 	AuthTokenDuration    time.Duration
-	TokenCleanupInterval time.Duration
-	TokenTickerInterval  time.Duration
-	KeyCleanupInterval   time.Duration
-	KeyTickerInterval    time.Duration
+	InvalidTokenTTL time.Duration
+	TokenCleanupTicker  time.Duration
+	SigningKeyTTL   time.Duration
+	KeyCleanupTicker    time.Duration
 }
 
 type client struct {

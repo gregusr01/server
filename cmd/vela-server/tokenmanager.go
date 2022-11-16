@@ -88,10 +88,10 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 		SignMethod:           jwt.SigningMethodRS256,
 		RegTokenDuration:     time.Minute * 10,
 		AuthTokenDuration:    time.Minute * 10,
-		TokenTickerInterval:  time.Minute * 5,
-		KeyCleanupInterval:   time.Hour * 5,
-		KeyTickerInterval:    time.Hour * 1,
-		TokenCleanupInterval: time.Minute * 15,
+		TokenCleanupTicker:  	time.Minute * 5,
+		SigningKeyTTL:   			time.Hour * 5,
+		KeyCleanupTicker:   	time.Hour * 1,
+		InvalidTokenTTL: 			time.Minute * 15,
 	}
 
 	return tokenmanager.New(_manager)

@@ -23,7 +23,7 @@ type AuthClaims struct {
 
 // ValidateToken validates a token using the public key
 func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
-
+	//parse and validate given token
 	tkn, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		//pull kid from token header
 		kid, err := getKid(token)
@@ -61,6 +61,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 
 	logrus.Info("STH: ", sth)
 
+	//check if hash present in invalidation db
 	if err = c.Database.GetInvalidToken(sth); err != nil {
 		retErr := fmt.Errorf("unable to call token invalidation db: %w", err)
 
@@ -77,11 +78,13 @@ func parseAuthClaims(token *jwt.Token) (*AuthClaims, error) {
 		return nil, errors.New("could not create token claims")
 	}
 
+	//set issued at time
 	iatTime, ok := claims["iat"].(float64)
 	if !ok {
 		return nil, errors.New("iat claim is of invalid type")
 	}
 
+	//set expiration time
 	expTime, ok := claims["exp"].(float64)
 	if !ok {
 		return nil, errors.New("exp claim is of invalid type")
@@ -98,21 +101,25 @@ func parseAuthClaims(token *jwt.Token) (*AuthClaims, error) {
 // Kid returns the key-identifier (kid) value of the key that signed the token
 // or an error if the kid is not present.
 func getKid(t string) (string, error) {
+	//get token header
 	parts := strings.Split(t, ".")
 	if len(parts) != 3 {
 		return "", errors.New("invalid token length")
 	}
 
+	//decode header string
 	b, err := base64.RawURLEncoding.DecodeString(parts[0])
 	if err != nil {
 		return "", err
 	}
 
+	//unmarshal claims
 	var claims map[string]string
 	if err := json.Unmarshal(b, &claims); err != nil {
 		return "", err
 	}
 
+	//retrieve kid
 	kid, ok := claims["kid"]
 	if !ok {
 		return "", errors.New("missing kid")

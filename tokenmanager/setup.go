@@ -14,6 +14,7 @@ import (
 type Setup struct {
 	// tokenmanager Configuration
 
+	// specifies the driver to use for the token manager client
 	Driver string
 
 	// specifies the database service to use for the client
@@ -28,6 +29,7 @@ type Setup struct {
 	//Key ID for the signing key
 	Kid string
 
+	//cache to hold all valid public signing keys of vela servers
 	PublicKeyCache map[string]*rsa.PublicKey
 
 	//Token SigningMethod
@@ -39,15 +41,17 @@ type Setup struct {
 	// specifies the token duration to use for the worker authentication token
 	AuthTokenDuration time.Duration
 
-	// specifies the interval for cleanup
-	TokenCleanupInterval time.Duration
+	// specifies the time to live for the invalid tokens in the db
+	InvalidTokenTTL time.Duration
 
-	// specifies the interval for the ticker
-	TokenTickerInterval time.Duration
+	// specifies the interval for the token cleanup ticker
+	TokenCleanupTicker time.Duration
 
-	KeyCleanupInterval time.Duration
+	// specifies the time to live for the signing keys in the db
+	SigningKeyTTL time.Duration
 
-	KeyTickerInterval time.Duration
+	// specifies the interval for the key cleanup ticker
+	KeyCleanupTicker time.Duration
 }
 
 // Tokenmanager creates and returns a Vela tokenmanager service
@@ -82,11 +86,93 @@ func (s *Setup) Minter() (Service, error) {
 		minter.WithRegTokenDuration(s.RegTokenDuration),
 		minter.WithAuthTokenDuration(s.AuthTokenDuration),
 		minter.WithDatabase(s.Database),
-		minter.WithTokenCleanupInterval(s.TokenCleanupInterval),
-		minter.WithTokenTickerInterval(s.TokenTickerInterval),
-		minter.WithKeyCleanupInterval(s.KeyCleanupInterval),
-		minter.WithKeyTickerInterval(s.KeyTickerInterval),
+		minter.WithInvalidTokenTTL(s.InvalidTokenTTL),
+		minter.WithTokenCleanupTicker(s.TokenCleanupTicker),
+		minter.WithSigningKeyTTL(s.SigningKeyTTL),
+		minter.WithKeyCleanupTicker(s.KeyCleanupTicker),
 		minter.WithKid(s.Kid),
 		minter.WithPubKeyCache(s.PublicKeyCache),
 	)
+}
+
+func (s *Setup) Validate() error {
+	logrus.Trace("validating tokenManger setup")
+
+	// verify a driver was provided
+	if len(s.Driver) == 0 {
+		return fmt.Errorf("no tokenManger driver provided")
+	}
+
+	// verify a database was provided
+	if s.Database == nil {
+		return fmt.Errorf("no database service provided for tokenManger")
+	}
+
+	// verify signing private key was provided
+	if s.PrivKey == nil {
+		return fmt.Errorf("no private key provided for tokenManger")
+	}
+
+	// verify a public key was provided
+	if s.PubKey == nil {
+		return fmt.Errorf("no public key provided for tokenManger")
+	}
+
+	// verify a cache of public keys was provided
+	if s.PublicKeyCache == nil {
+		return fmt.Errorf("no public key cache provided for tokenManger")
+	}
+
+	// verify a signing key ID was provided
+	if len(s.Kid) == 0 {
+		return fmt.Errorf("no kid provided for tokenMangager")
+	}
+
+	// verify a signing method was provided
+	if s.SignMethod == nil {
+		return fmt.Errorf("no public key cache provided for tokenManger")
+	}
+
+	// verify a duration for the registation token was provided
+	if s.RegTokenDuration.String() == "0s" {
+		return fmt.Errorf("no registration token duration provided for tokenManger")
+	}
+
+	// verify a duration for the authentication token was provided
+	if s.AuthTokenDuration.String() == "0s" {
+		return fmt.Errorf("no authentication token duration provided for tokenManger")
+	}
+
+	// verify an interval to run the token cleanup job was provided
+	if s.TokenCleanupTicker.String() == "0s" {
+		return fmt.Errorf("no token cleanup interval provided for tokenManger")
+	}
+
+	// verify a time to live for the invalid tokens in the database was provided
+	if s.InvalidTokenTTL.String() == "0s" {
+		return fmt.Errorf("no invalid token TTL provided for tokenManger")
+	}
+
+	// verify the token cleanup interval is longer than the authentication token duration to avoid token replays
+	if s.InvalidTokenTTL > s.AuthTokenDuration {
+		return fmt.Errorf("Token cleanup TTL for tokenManager too short, must be larger than configured AuthTokenDuration")
+	}
+
+	// verify the token cleanup interval is longer than the registration token duration to avoid token replays
+	if s.InvalidTokenTTL > s.RegTokenDuration {
+		return fmt.Errorf("Token cleanup TTL for tokenManager too short, must be larger than configured RegTokenDuration")
+	}
+
+	// verify a time to live for the expired keys in the database was provided
+	if s.SigningKeyTTL.String() == "0s" {
+		return fmt.Errorf("no signing key TTL provided for tokenManger")
+	}
+
+	// verify an interval to run the key cleanup job was provided
+	if s.KeyCleanupTicker.String() == "0s" {
+		return fmt.Errorf("no key cleanup interval provided for tokenManger")
+	}
+
+	// setup is valid
+	return nil
 }
