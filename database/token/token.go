@@ -13,34 +13,34 @@ import (
 )
 
 type (
-	// config represents the settings required to create the engine that implements the PipelineService interface.
+	// config represents the settings required to create the engine that implements the TokenService interface.
 	config struct {
 		// specifies to skip creating tables and indexes for the token engine
 		SkipCreation bool
 	}
 
-	// engine represents the pipeline functionality that implements the PipelineService interface.
+	// engine represents the token functionality that implements the TokenService interface.
 	engine struct {
-		// engine configuration settings used in pipeline functions
+		// engine configuration settings used in token functions
 		config *config
 
-		// gorm.io/gorm database client used in pipeline functions
+		// gorm.io/gorm database client used in token functions
 		//
 		// https://pkg.go.dev/gorm.io/gorm#DB
 		client *gorm.DB
 
-		// sirupsen/logrus logger used in pipeline functions
+		// sirupsen/logrus logger used in token functions
 		//
 		// https://pkg.go.dev/github.com/sirupsen/logrus#Entry
 		logger *logrus.Entry
 	}
 )
 
-// New creates and returns a Vela service for integrating with pipelines in the database.
+// New creates and returns a Vela service for integrating with tokens in the database.
 //
 //nolint:revive // ignore returning unexported engine
 func New(opts ...EngineOpt) (*engine, error) {
-	// create new Pipeline engine
+	// create new Token engine
 	e := new(engine)
 
 	// create new fields

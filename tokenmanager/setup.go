@@ -72,10 +72,6 @@ func (s *Setup) Tokenmanager() (Service, error) {
 func (s *Setup) Minter() (Service, error) {
 	logrus.Trace("creating token manager client from setup")
 
-	if s.PrivKey == nil {
-		logrus.Trace("you failed")
-	}
-
 	// create new minter service
 	//
 	// https://pkg.go.dev/github.com/go-vela/server/scm/github?tab=doc#New

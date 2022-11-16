@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-// TokenService represents the Vela interface for token manager
+// SigningKeyService represents the Vela interface for token manager
 // functions with the supported Database backends.
 //
 //nolint:revive // ignore name stutter
@@ -18,17 +18,21 @@ type SigningKeyService interface {
 	//
 	// https://en.wikipedia.org/wiki/Data_definition_language
 
-	// CreateTokenTable defines a function that creates the invalid_tokens table.
+	// CreateSigningKeyTable defines a function that creates the signing_keys table
 	CreateSigningKeyTable(string) error
 
-	// InvalidateToken defines a function that adds a token hash to the invalid_tokens table
+	// AddSigningKey defines a function that adds a signing key to the signing_keys table
 	AddSigningKey(string, string, *rsa.PublicKey) error
 
+	// GetSigningKey defines a function that returns a signing key given a key identifier
 	GetSigningKey(string) (*rsa.PublicKey, error)
 
+	// ListSigningKeys defines a function that returns all valid signing keys from the database
 	ListSigningKeys() ([]signingKey, error)
 
+	// DeleteExpiredKeys defines a function that deletes stale signing keys from the database
 	DeleteExpiredKeys(time.Duration) error
 
+	// UpdateKeyTTL defines a function that updates a key time to live in the signing_keys table
 	UpdateKeyTTL(string) error
 }

@@ -30,7 +30,7 @@ invalid_tokens (
 
 // CreateInvalidTokenTable creates the token table in the database.
 func (e *engine) CreateInvalidTokenTable(driver string) error {
-	e.logger.Tracef("creating repos table in the database")
+	e.logger.Tracef("creating invalid_tokens table in the database")
 
 	// handle the driver provided to create the table
 	switch driver {
