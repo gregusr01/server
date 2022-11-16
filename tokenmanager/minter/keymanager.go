@@ -6,8 +6,6 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 type signingKey struct {

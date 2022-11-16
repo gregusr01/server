@@ -2,8 +2,6 @@ package minter
 
 import (
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 // CleanInvalidTokens cleans old entries to the invalid token db

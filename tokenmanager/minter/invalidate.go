@@ -5,8 +5,6 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"fmt"
-
-	"github.com/sirupsen/logrus"
 )
 
 // InvalidateToken uses the client context to create a database connection

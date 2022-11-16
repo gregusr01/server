@@ -2,7 +2,6 @@ package minter
 
 import (
 	"crypto/rsa"
-	"errors"
 	"fmt"
 	"time"
 
