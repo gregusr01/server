@@ -96,47 +96,47 @@ func WithDatabase(d database.Service) ClientOpt {
 	}
 }
 
-// WithTokenCleanupInterval sets the token interval in the secret client for Vault.
-func WithTokenCleanupInterval(tokenCleanupInterval time.Duration) ClientOpt {
+// WithInvalidTokenTTL sets the token interval in the secret client for Vault.
+func WithInvalidTokenTTL(InvalidTokenTTL time.Duration) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring interval for token cleanup duration")
 
 		// set the token duration in the vault client
-		c.config.TokenCleanupInterval = tokenCleanupInterval
+		c.config.InvalidTokenTTL = InvalidTokenTTL
 
 		return nil
 	}
 }
 
-func WithKeyCleanupInterval(keyCleanupInterval time.Duration) ClientOpt {
+func WithSigningKeyTTL(SigningKeyTTL time.Duration) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring interval for token cleanup duration")
 
 		// set the token duration in the vault client
-		c.config.KeyCleanupInterval = keyCleanupInterval
+		c.config.SigningKeyTTL = SigningKeyTTL
 
 		return nil
 	}
 }
 
-// WithTokenCleanupInterval sets the token interval in the secret client for Vault.
-func WithTokenTickerInterval(tokenTickerInterval time.Duration) ClientOpt {
+// WithInvalidTokenTTL sets the token interval in the secret client for Vault.
+func WithTokenCleanupTicker(TokenCleanupTicker time.Duration) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring interval for ticker")
 
 		// set the ticker interval in config
-		c.config.TokenTickerInterval = tokenTickerInterval
+		c.config.TokenCleanupTicker = TokenCleanupTicker
 
 		return nil
 	}
 }
 
-func WithKeyTickerInterval(keyTickerInterval time.Duration) ClientOpt {
+func WithKeyCleanupTicker(KeyCleanupTicker time.Duration) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring interval for ticker")
 
 		// set the ticker interval in config
-		c.config.KeyTickerInterval = keyTickerInterval
+		c.config.KeyCleanupTicker = KeyCleanupTicker
 
 		return nil
 	}

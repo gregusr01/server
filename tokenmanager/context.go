@@ -52,7 +52,7 @@ func FromGinContext(c *gin.Context) Service {
 
 // WithContext inserts the tokenmanager Service into the context.Context.
 func WithContext(c context.Context, s Service) context.Context {
-	// set the queue Service in the context.Context
+	// set the tokenmanger Service in the context.Context
 	//
 	// https://pkg.go.dev/context?tab=doc#WithValue
 	//

@@ -21,7 +21,7 @@ type signingKey struct {
 func (c *client) RefreshKeyCache() {
 	logrus.Info("Minter:RefreshKeyCache Function Called")
 	for {
-		ticker := time.NewTicker(c.config.KeyTickerInterval) //double check me
+		ticker := time.NewTicker(c.config.KeyCleanupTicker) //double check me
 		for range ticker.C {
 			logrus.Info("Retrieving list of valid public signing keys")
 

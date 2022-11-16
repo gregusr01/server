@@ -15,10 +15,9 @@ func (c *client) MintToken(ctx context.Context, tokenType, hostname string) (str
 	//pull priv key from postgres
 	var tk *jwt.Token
 
+	//set token claims
 	switch tokenType {
 	case "Registration":
-
-		// check DB for registration token existence
 		tk = jwt.NewWithClaims(c.config.SignMethod, jwt.MapClaims{
 			"tokenType": tokenType,
 			"iat":       time.Now().Unix(),
@@ -36,8 +35,10 @@ func (c *client) MintToken(ctx context.Context, tokenType, hostname string) (str
 		return "", errors.New("invalid token type")
 	}
 
+	// set kid header
 	tk.Header["kid"] = c.config.Kid
 
+	//sign token with configured private signing key
 	token, err := tk.SignedString(c.config.PrivKey)
 	if err != nil {
 		return "", err //wrap error

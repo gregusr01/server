@@ -10,10 +10,10 @@ import (
 )
 
 // DeletePipeline deletes an existing pipeline from the database.
-func (e *engine) DeleteInvalidTokens(tokenCleanupInterval time.Duration) error {
+func (e *engine) DeleteInvalidTokens(invalidTokenTTL time.Duration) error {
 
 	// Initializing token clean up interval
-	ts := time.Now().Add(-tokenCleanupInterval).Unix()
+	ts := time.Now().Add(-invalidTokenTTL).Unix()
 
 	//token struct - this should be added to library later
 	type token struct {

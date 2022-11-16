@@ -21,6 +21,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/urfave/cli/v2"
+	"github.com/google/uuid"
 )
 
 // helper function to setup the queue from the CLI arguments.
@@ -68,9 +69,10 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	pk := &k.PublicKey
 
 	//generate Kid value
-	kid := fmt.Sprintf("test%v", time.Now().Unix())
+	kid := fmt.Sprintf("%v", uuid.New())
+
 	//add public key to database
-	if err := d.AddSigningKey(kid, "testserver", pk); err != nil {
+	if err := d.AddSigningKey(kid, c.String("server-addr"), pk); err != nil {
 		logrus.Trace("error adding signing key")
 	}
 	//build list of public keys (pull from database)
@@ -86,10 +88,10 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 		SignMethod:           jwt.SigningMethodRS256,
 		RegTokenDuration:     time.Minute * 10,
 		AuthTokenDuration:    time.Minute * 10,
-		TokenTickerInterval:  time.Minute * 1,
-		KeyCleanupInterval:   time.Minute * 5,
-		KeyTickerInterval:    time.Minute * 1,
-		TokenCleanupInterval: time.Minute * 5, //THIS TIME MUUUUUST BE EQUAL TO OR LONGER THAN THE DURATION OF THE TOKENS!!!!!!!!!!!!
+		TokenCleanupTicker:  	time.Minute * 5,
+		SigningKeyTTL:   			time.Hour * 5,
+		KeyCleanupTicker:   	time.Hour * 1,
+		InvalidTokenTTL: 			time.Minute * 15,
 	}
 
 	return tokenmanager.New(_manager)
