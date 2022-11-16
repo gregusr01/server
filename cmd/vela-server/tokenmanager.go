@@ -20,8 +20,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/urfave/cli/v2"
 	"github.com/google/uuid"
+	"github.com/urfave/cli/v2"
 )
 
 // helper function to setup the queue from the CLI arguments.
@@ -79,19 +79,19 @@ func setupTokenManger(c *cli.Context, d database.Service) (tokenmanager.Service,
 	pubKeyCache := map[string]*rsa.PublicKey{kid: pk}
 
 	_manager := &tokenmanager.Setup{
-		Driver:               "minter",
-		Database:             d,
-		PrivKey:              k,
-		PubKey:               pk,
-		PublicKeyCache:       pubKeyCache,
-		Kid:                  kid,
-		SignMethod:           jwt.SigningMethodRS256,
-		RegTokenDuration:     time.Minute * 10,
-		AuthTokenDuration:    time.Minute * 10,
-		TokenCleanupTicker:  	time.Minute * 5,
-		SigningKeyTTL:   			time.Hour * 5,
-		KeyCleanupTicker:   	time.Hour * 1,
-		InvalidTokenTTL: 			time.Minute * 15,
+		Driver:             "minter",
+		Database:           d,
+		PrivKey:            k,
+		PubKey:             pk,
+		PublicKeyCache:     pubKeyCache,
+		Kid:                kid,
+		SignMethod:         jwt.SigningMethodRS256,
+		RegTokenDuration:   time.Minute * 10,
+		AuthTokenDuration:  time.Minute * 10,
+		TokenCleanupTicker: time.Minute * 5,
+		SigningKeyTTL:      time.Hour * 5,
+		KeyCleanupTicker:   time.Hour * 1,
+		InvalidTokenTTL:    time.Minute * 15,
 	}
 
 	return tokenmanager.New(_manager)

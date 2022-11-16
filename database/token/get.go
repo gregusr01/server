@@ -19,7 +19,6 @@ func (e *engine) GetInvalidToken(t string) error {
 		Timestamp sql.NullInt64  `sql:"timestamp"`
 	}
 
-	//var tk string
 	var tk token
 
 	// send query to the database and store result in variable
@@ -38,6 +37,6 @@ func (e *engine) GetInvalidToken(t string) error {
 
 	e.logger.Tracef("what we got back: %s", tk)
 
-	// if we got something
+	// if token exists in invalidation table
 	return errors.New("token hash found inside invalidation database")
 }

@@ -36,7 +36,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 			return k, nil
 		}
 
-		logrus.Info("KID not part of cache, checking database")
+		logrus.Infof("KID %v not part of cache, checking database", kid)
 
 		//check db for signing key
 		k, err := c.Database.GetSigningKey(kid)
@@ -59,13 +59,9 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 	hasher.Write([]byte(token))
 	sth := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 
-	logrus.Info("STH: ", sth)
-
 	//check if hash present in invalidation db
 	if err = c.Database.GetInvalidToken(sth); err != nil {
-		retErr := fmt.Errorf("unable to call token invalidation db: %w", err)
-
-		return nil, retErr
+		return nil, fmt.Errorf("unable to call token invalidation db: %w", err)
 	}
 
 	return parseAuthClaims(tkn)

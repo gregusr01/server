@@ -28,7 +28,7 @@ type Service interface {
 	// InvalidateToken defines a function that invalidates a token by adding it to the invalidation table in the database
 	InvalidateToken(context.Context, string) error
 
-		// CleanInvalidTokens defines a function that will purge expired tokens from the configured database
+	// CleanInvalidTokens defines a function that will purge expired tokens from the configured database
 	CleanInvalidTokens()
 
 	// CleanExpiredSigningKeys defines a function that will purge expired signing keys from the configured database

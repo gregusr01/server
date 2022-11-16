@@ -52,9 +52,9 @@ type (
 		repo.RepoService
 		// https://pkg.go.dev/github.com/go-vela/server/database/user#UserService
 		user.UserService
-
+		// https://pkg.go.dev/github.com/go-vela/server/database/token#TokenService
 		token.TokenService
-
+		// https://pkg.go.dev/github.com/go-vela/server/database/signingkey#SigningKeyService
 		signingkeys.SigningKeyService
 	}
 )
@@ -394,9 +394,9 @@ func createServices(c *client) error {
 		return err
 	}
 
-	// create the database agnostic user service
+	// create the database agnostic token service
 	//
-	// https://pkg.go.dev/github.com/go-vela/server/database/user#New
+	// https://pkg.go.dev/github.com/go-vela/server/database/token#New
 	c.TokenService, err = token.New(
 		token.WithClient(c.Postgres),
 		token.WithLogger(c.Logger),
@@ -406,6 +406,9 @@ func createServices(c *client) error {
 		return err
 	}
 
+	// create the database agnostic signing key service
+	//
+	// https://pkg.go.dev/github.com/go-vela/server/database/signingkeys#New
 	c.SigningKeyService, err = signingkeys.New(
 		signingkeys.WithClient(c.Postgres),
 		signingkeys.WithLogger(c.Logger),

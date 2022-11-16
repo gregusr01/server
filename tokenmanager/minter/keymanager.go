@@ -6,8 +6,6 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 type signingKey struct {
@@ -19,21 +17,20 @@ type signingKey struct {
 
 // CleanInvalidTokens cleans old entries to the invalid token db
 func (c *client) RefreshKeyCache() {
-	logrus.Info("Minter:RefreshKeyCache Function Called")
+	c.Logger.Tracef("Starting RefreshKeyCache function on loop.  Will run every %v to update the signing key cache with the latest entries", c.config.KeyCleanupTicker)
 	for {
 		ticker := time.NewTicker(c.config.KeyCleanupTicker) //double check me
 		for range ticker.C {
-			logrus.Info("Retrieving list of valid public signing keys")
+			c.Logger.Tracef("Refreshing list of valid public signing keys")
 
 			//retrieve list of valid public signing keys
-
 			if err := c.Database.UpdateKeyTTL(c.config.Kid); err != nil {
-				logrus.Infof("unable to update key ttl for key kid: %s", c.config.Kid)
+				c.Logger.Warningf("unable to update key ttl for key kid: %s", c.config.Kid)
 			}
 
 			DBkeys, err := c.Database.ListSigningKeys()
 			if err != nil {
-				logrus.Info("Error retrieving list of public signing keys", err)
+				c.Logger.Warning("Error retrieving list of public signing keys", err)
 			}
 
 			pubKeys := make(map[string]*rsa.PublicKey)
@@ -42,17 +39,17 @@ func (c *client) RefreshKeyCache() {
 			for _, v := range DBkeys {
 
 				if !v.PublicKey.Valid {
-					logrus.Info("public key not valid")
+					c.Logger.Warningf("Public key not valid.  Value: %v", v.PublicKey)
 					continue
 				}
 
 				pk, err := convertKeyString(v.PublicKey.String)
 				if err != nil {
-					logrus.Info("unable to decode public key", err)
+					c.Logger.Warning("Unable to decode public key: ", err)
 					continue
 				}
 				if !v.Kid.Valid {
-					logrus.Info("kid not valid")
+					c.Logger.Warningf("Kid not valid. Value: %v", v.Kid)
 					continue
 				}
 
@@ -60,11 +57,7 @@ func (c *client) RefreshKeyCache() {
 				pubKeys[v.Kid.String] = pk
 			}
 
-			//should really use mutex here
 			c.config.PublicKeyCache = pubKeys
-			for k, v := range pubKeys {
-				logrus.Infof("public key cache kid %v: value %v", k, v)
-			}
 		}
 	}
 }

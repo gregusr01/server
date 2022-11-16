@@ -12,11 +12,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// GetInvalidToken checks for an existing token from the database.
+// GetSigningKey pulls a specific signing key from the database given a key identifier.
 func (e *engine) GetSigningKey(k string) (*rsa.PublicKey, error) {
 	e.logger.Tracef("attempting to retrieve key %s from database", k)
 
-	//var tk string
 	var sk signingKey
 
 	// send query to the database and store result in variable
@@ -44,6 +43,5 @@ func (e *engine) GetSigningKey(k string) (*rsa.PublicKey, error) {
 		logrus.Info("unable to parse public key string", err)
 	}
 
-	// if we got something
 	return pubKey, nil
 }

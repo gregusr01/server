@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-// DeletePipeline deletes an existing pipeline from the database.
+// DeleteInvalidTokens deletes stale invalid tokens from the database.
 func (e *engine) DeleteInvalidTokens(invalidTokenTTL time.Duration) error {
 
 	// Initializing token clean up interval
@@ -21,7 +21,6 @@ func (e *engine) DeleteInvalidTokens(invalidTokenTTL time.Duration) error {
 		Timestamp sql.NullInt64  `sql:"timestamp"`
 	}
 
-	//var tk string
 	var tk token
 
 	// send query to the database

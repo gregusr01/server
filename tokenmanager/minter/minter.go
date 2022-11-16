@@ -10,22 +10,34 @@ import (
 )
 
 type config struct {
-	PrivKey              *rsa.PrivateKey   //Private Key Used to Sign Token
-	PubKey               *rsa.PublicKey    //Public Key Used to Validate Token
-	SignMethod           jwt.SigningMethod //Token SigningMethod
+	//Private Key Used to Sign Token
+	PrivKey              *rsa.PrivateKey
+	//Public Key Used to Validate Token
+	PubKey               *rsa.PublicKey
+	//Token SigningMethod
+	SignMethod           jwt.SigningMethod
+	//Key identifier
 	Kid                  string
+	//Cache for valid public signing keys
 	PublicKeyCache       map[string]*rsa.PublicKey
+	//Validity duration for registration tokens
 	RegTokenDuration     time.Duration
+	//Validity duration for authentication tokens
 	AuthTokenDuration    time.Duration
-	InvalidTokenTTL time.Duration
-	TokenCleanupTicker  time.Duration
-	SigningKeyTTL   time.Duration
-	KeyCleanupTicker    time.Duration
+	//Time to live for invalid tokens in database
+	InvalidTokenTTL 		 time.Duration
+	//Interval to run token cleanup function
+	TokenCleanupTicker   time.Duration
+	//Time to live for signing keys in database
+	SigningKeyTTL   		 time.Duration
+	//Interval to run key cleanup function
+	KeyCleanupTicker     time.Duration
 }
 
 type client struct {
 	config   *config
 	Database database.Service
+	// https://pkg.go.dev/github.com/sirupsen/logrus#Entry
 	Logger   *logrus.Entry
 }
 

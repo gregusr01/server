@@ -14,8 +14,6 @@ import (
 func (e *engine) InvalidateToken(t string) error {
 	e.logger.Tracef("Invalidating token")
 
-	//any vaidation we can do on hash?
-
 	type token struct {
 		TokenHash sql.NullString `sql:"token_hash"`
 		Timestamp sql.NullInt64  `sql:"timestamp"`

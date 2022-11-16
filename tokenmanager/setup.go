@@ -72,10 +72,6 @@ func (s *Setup) Tokenmanager() (Service, error) {
 func (s *Setup) Minter() (Service, error) {
 	logrus.Trace("creating token manager client from setup")
 
-	if s.PrivKey == nil {
-		logrus.Trace("you failed")
-	}
-
 	// create new minter service
 	//
 	// https://pkg.go.dev/github.com/go-vela/server/scm/github?tab=doc#New
@@ -154,13 +150,13 @@ func (s *Setup) Validate() error {
 	}
 
 	// verify the token cleanup interval is longer than the authentication token duration to avoid token replays
-	if s.InvalidTokenTTL > s.AuthTokenDuration {
-		return fmt.Errorf("Token cleanup TTL for tokenManager too short, must be larger than configured AuthTokenDuration")
+	if s.InvalidTokenTTL < s.AuthTokenDuration {
+		return fmt.Errorf("token cleanup TTL for tokenManager too short, must be larger than configured AuthTokenDuration")
 	}
 
 	// verify the token cleanup interval is longer than the registration token duration to avoid token replays
-	if s.InvalidTokenTTL > s.RegTokenDuration {
-		return fmt.Errorf("Token cleanup TTL for tokenManager too short, must be larger than configured RegTokenDuration")
+	if s.InvalidTokenTTL < s.RegTokenDuration {
+		return fmt.Errorf("token cleanup TTL for tokenManager too short, must be larger than configured RegTokenDuration")
 	}
 
 	// verify a time to live for the expired keys in the database was provided

@@ -7,7 +7,7 @@ package signingkeys
 import "github.com/go-vela/types/constants"
 
 const (
-	// CreatePostgresTable represents a query to create the Postgres invalid_tokens table.
+	// CreatePostgresTable represents a query to create the Postgres signing_keys table.
 	CreatePostgresTable = `
 CREATE TABLE
 IF NOT EXISTS
@@ -19,7 +19,7 @@ signing_keys (
 	UNIQUE(kid)
 );`
 
-	// CreateSqliteTable represents a query to create the Sqlite invalid_tokens table.
+	// CreateSqliteTable represents a query to create the Sqlite signing_keys table.
 	CreateSqliteTable = `
 CREATE TABLE
 IF NOT EXISTS
@@ -32,17 +32,17 @@ signing_keys (
 );`
 )
 
-// CreateInvalidTokenTable creates the token table in the database.
+// CreateInvalidTokenTable creates the signing_keys table in the database.
 func (e *engine) CreateSigningKeyTable(driver string) error {
-	e.logger.Tracef("creating repos table in the database")
+	e.logger.Tracef("creating signing_keys table in the database")
 
 	// handle the driver provided to create the table
 	switch driver {
 	case constants.DriverPostgres:
-		// create the token table for Postgres
+		// create the signing_keys table for Postgres
 		return e.client.Exec(CreatePostgresTable).Error
 	default:
-		// create the token table for Sqlite
+		// create the signing_keys table for Sqlite
 		return e.client.Exec(CreateSqliteTable).Error
 	}
 }

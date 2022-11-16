@@ -7,11 +7,9 @@ package signingkeys
 
 import "time"
 
-// InvalidateToken adds a token hash to the token_invalidate database.
+// UpdateKeyTTL updates a key time to live in the signing_keys table
 func (e *engine) UpdateKeyTTL(kid string) error {
 	e.logger.Tracef("updating ttl for known key")
-
-	//any vaidation we can do on hash?
 
 	// send query to the database
 	return e.client.

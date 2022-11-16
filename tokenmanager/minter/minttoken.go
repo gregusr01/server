@@ -15,6 +15,8 @@ func (c *client) MintToken(ctx context.Context, tokenType, hostname string) (str
 	//pull priv key from postgres
 	var tk *jwt.Token
 
+	c.Logger.Tracef("Minting %s token for %s", tokenType, hostname)
+
 	//set token claims
 	switch tokenType {
 	case "Registration":

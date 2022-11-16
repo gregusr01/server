@@ -2,7 +2,6 @@ package minter
 
 import (
 	"crypto/rsa"
-	"errors"
 	"fmt"
 	"time"
 
@@ -13,130 +12,108 @@ import (
 // ClientOpt represents a configuration option to initialize the secret client for Native.
 type ClientOpt func(*client) error
 
-// WithTokenDuration sets the token duration in the secret client for Vault.
+// WithRegTokenDuration sets the token duration for the registration token in the tokenmanager client
 func WithRegTokenDuration(tokenDuration time.Duration) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring token duration for registration token")
-
-		// set the token duration in the vault client
+		c.Logger.Tracef("configuring token duration of %v for registration token", tokenDuration)
 		c.config.RegTokenDuration = tokenDuration
 
 		return nil
 	}
 }
 
-// WithTokenDuration sets the token duration in the secret client for Vault.
+// WithAuthTokenDuration sets the token duration for the authentication in the tokenmanager client
 func WithAuthTokenDuration(tokenDuration time.Duration) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring token duration for auth token")
-
-		// set the token duration in the vault client
+		c.Logger.Tracef("configuring token duration of %v for auth token", tokenDuration)
 		c.config.AuthTokenDuration = tokenDuration
 
 		return nil
 	}
 }
 
-// WithTokenDuration sets the token duration in the secret client for Vault.
+// WithPrivKey sets the private key that will be used for token signing in the tokenmanager client
 func WithPrivKey(privKey *rsa.PrivateKey) ClientOpt {
 	return func(c *client) error {
-
 		c.Logger.Trace("configuring private key for token signing")
-
-		if privKey == nil {
-			c.Logger.Trace("no private key found")
-			return errors.New("this failed")
-		}
-
-		// set the token duration in the vault client
 		c.config.PrivKey = privKey
 
 		return nil
 	}
 }
 
-// WithTokenDuration sets the token duration in the secret client for Vault.
+// WithPubKey sets the public key that will be used for token validation in the tokenmanager client
 func WithPubKey(pubKey *rsa.PublicKey) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring public key for token validation")
-
-		// set the token duration in the vault client
 		c.config.PubKey = pubKey
 
 		return nil
 	}
 }
 
-// WithTokenDuration sets the token duration in the secret client for Vault.
+// WithSignMethod sets the token signing method in the tokenmanager client
 func WithSignMethod(signingMethod jwt.SigningMethod) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring token signing method")
-
-		// set the token duration in the vault client
 		c.config.SignMethod = signingMethod
 
 		return nil
 	}
 }
 
-// WithDatabase sets the Vela database service in the secret client for Native.
+// WithDatabase sets the Vela database service in the tokenmanager client
 func WithDatabase(d database.Service) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring database service in native secret client")
+		c.Logger.Trace("configuring database service for token manager")
 
 		// check if the Vela database service provided is empty
 		if d == nil {
 			return fmt.Errorf("no Vela database service provided")
 		}
 
-		// set the Vela database service in the secret client
+		// set the Vela database service in the tokenmanager client
 		c.Database = d
 
 		return nil
 	}
 }
 
-// WithInvalidTokenTTL sets the token interval in the secret client for Vault.
-func WithInvalidTokenTTL(InvalidTokenTTL time.Duration) ClientOpt {
+// WithInvalidTokenTTL sets the token time to live in the tokenmanager client
+func WithInvalidTokenTTL(invalidTokenTTL time.Duration) ClientOpt {
+	return func(c *client) error {
+		c.Logger.Tracef("configuring interval of %v for token cleanup duration", invalidTokenTTL)
+		c.config.InvalidTokenTTL = invalidTokenTTL
+
+		return nil
+	}
+}
+
+// WithInvalidTokenTTL sets the signing key time to live in the tokenmanager client
+func WithSigningKeyTTL(signingKeyTTL time.Duration) ClientOpt {
 	return func(c *client) error {
 		c.Logger.Trace("configuring interval for token cleanup duration")
-
-		// set the token duration in the vault client
-		c.config.InvalidTokenTTL = InvalidTokenTTL
+		c.config.SigningKeyTTL = signingKeyTTL
 
 		return nil
 	}
 }
 
-func WithSigningKeyTTL(SigningKeyTTL time.Duration) ClientOpt {
+// WithTokenCleanupTicker sets the token cleanup interval in the tokenmanager client
+func WithTokenCleanupTicker(tokenCleanupTicker time.Duration) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring interval for token cleanup duration")
-
-		// set the token duration in the vault client
-		c.config.SigningKeyTTL = SigningKeyTTL
+		c.Logger.Tracef("configuring interval of %v for token cleanup ticker", tokenCleanupTicker)
+		c.config.TokenCleanupTicker = tokenCleanupTicker
 
 		return nil
 	}
 }
 
-// WithInvalidTokenTTL sets the token interval in the secret client for Vault.
-func WithTokenCleanupTicker(TokenCleanupTicker time.Duration) ClientOpt {
+// WithKeyCleanupTicker sets the key cleanup interval in the tokenmanager client
+func WithKeyCleanupTicker(keyCleanupTicker time.Duration) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring interval for ticker")
-
-		// set the ticker interval in config
-		c.config.TokenCleanupTicker = TokenCleanupTicker
-
-		return nil
-	}
-}
-
-func WithKeyCleanupTicker(KeyCleanupTicker time.Duration) ClientOpt {
-	return func(c *client) error {
-		c.Logger.Trace("configuring interval for ticker")
-
-		// set the ticker interval in config
-		c.config.KeyCleanupTicker = KeyCleanupTicker
+		c.Logger.Tracef("configuring interval of %v for key cleanup ticker", keyCleanupTicker)
+		c.config.KeyCleanupTicker = keyCleanupTicker
 
 		return nil
 	}
@@ -145,9 +122,7 @@ func WithKeyCleanupTicker(KeyCleanupTicker time.Duration) ClientOpt {
 // WithPubKeyCache sets the cache in which public keys will be served
 func WithPubKeyCache(pubKeycache map[string]*rsa.PublicKey) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring public key for token validation")
-
-		// set the token duration in the vault client
+		c.Logger.Trace("configuring public key cache that will be used for token validation")
 		c.config.PublicKeyCache = pubKeycache
 
 		return nil
@@ -155,12 +130,10 @@ func WithPubKeyCache(pubKeycache map[string]*rsa.PublicKey) ClientOpt {
 }
 
 // WithKid sets the key identifier that will be stamped in every token
-func WithKid(pubKeycache string) ClientOpt {
+func WithKid(kid string) ClientOpt {
 	return func(c *client) error {
-		c.Logger.Trace("configuring public key for token validation")
-
-		// set the token duration in the vault client
-		c.config.Kid = pubKeycache
+		c.Logger.Tracef("configuring %v as the public key identifier (KID)", kid)
+		c.config.Kid = kid
 
 		return nil
 	}

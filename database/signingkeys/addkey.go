@@ -13,10 +13,11 @@ import (
 	"time"
 )
 
-// InvalidateToken adds a token hash to the token_invalidate database.
+// AddSigningKey adds a public key to the signing key database.
 func (e *engine) AddSigningKey(k, s string, pk *rsa.PublicKey) error {
 	e.logger.Tracef("Adding new public key to signing key database")
 
+	//put key in correct string format
 	x509pk := x509.MarshalPKCS1PublicKey(pk)
 	b64 := base64.StdEncoding.EncodeToString(x509pk)
 
