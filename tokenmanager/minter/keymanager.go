@@ -3,19 +3,18 @@ package minter
 import (
 	"crypto/rsa"
 	"crypto/x509"
-	"database/sql"
 	"encoding/base64"
 	"time"
 
 	"github.com/sirupsen/logrus"
 )
 
-type signingKey struct {
-	Kid        sql.NullString `sql:"kid"`
-	PublicKey  sql.NullString `sql:"public_key"`
-	ServerName sql.NullString `sql:"server_name"`
-	Timestamp  sql.NullInt64  `sql:"timestamp"`
-}
+// type signingKey struct {
+// 	Kid        sql.NullString `sql:"kid"`
+// 	PublicKey  sql.NullString `sql:"public_key"`
+// 	ServerName sql.NullString `sql:"server_name"`
+// 	Timestamp  sql.NullInt64  `sql:"timestamp"`
+// }
 
 // CleanInvalidTokens cleans old entries to the invalid token db
 func (c *client) RefreshKeyCache() {
@@ -69,7 +68,7 @@ func (c *client) RefreshKeyCache() {
 	}
 }
 
-//takes a b64 encoded public key string and converts it to an *rsa.PublicKey for outside consumption
+// takes a b64 encoded public key string and converts it to an *rsa.PublicKey for outside consumption
 func convertKeyString(k string) (*rsa.PublicKey, error) {
 
 	//decode public key

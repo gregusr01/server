@@ -25,7 +25,7 @@ func SystemRefresh(c *gin.Context) {
 	//if claims.TokenType == "Registration"
 	// then register worker
 
-	nt, err := tokenmanager.FromContext(c).MintToken(c, "Auth", claims.Sub)
+	nt, err := tokenmanager.FromContext(c).MintToken(c, "Auth", *claims.Sub)
 	if err != nil {
 		retErr := fmt.Errorf("unable to mint new token for refresh: %s", err)
 		util.HandleError(c, http.StatusUnauthorized, retErr)

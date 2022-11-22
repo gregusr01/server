@@ -7,7 +7,7 @@ package tokenmanager
 import (
 	"context"
 
-	"github.com/go-vela/server/tokenmanager/minter"
+	"github.com/go-vela/types/library"
 )
 
 // Service represents the interface for Vela integrating
@@ -20,7 +20,7 @@ type Service interface {
 	MintToken(context.Context, string, string) (string, error)
 
 	// ValidateToken defines a function that validates a token
-	ValidateToken(context.Context, string) (*minter.AuthClaims, error)
+	ValidateToken(context.Context, string) (*library.AuthClaims, error)
 
 	// InvalidateToken defines a function that invalidates a token by adding it to the invalidation table in the database
 	InvalidateToken(context.Context, string) error

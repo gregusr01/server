@@ -30,7 +30,6 @@ require (
 	github.com/prometheus/client_golang v1.13.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/afero v1.9.2
-	github.com/urfave/cli v1.22.10
 	github.com/urfave/cli/v2 v2.17.1
 	go.starlark.net v0.0.0-20220928063852-5fccb4daaf6d
 	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
@@ -139,3 +138,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/klog/v2 v2.70.1 // indirect
 )
+
+replace github.com/go-vela/types => /Users/z002jxm/go/src/github.com/originaldrock/types

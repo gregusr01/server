@@ -8,21 +8,21 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 
+	"github.com/go-vela/types/library"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
 )
 
-type AuthClaims struct {
-	TokenType string
-	Iat       time.Time
-	Exp       time.Time
-	Sub       string
-}
+// type AuthClaims struct {
+// 	TokenType string
+// 	Iat       time.Time
+// 	Exp       time.Time
+// 	Sub       string
+// }
 
 // ValidateToken validates a token using the public key
-func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
+func (c *client) ValidateToken(ctx context.Context, token string) (*library.AuthClaims, error) {
 
 	tkn, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		//pull kid from token header
@@ -30,6 +30,8 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 		if err != nil {
 			return nil, err
 		}
+
+		logrus.Info("KID: ", kid)
 
 		//pull pub key from c.config.PubKeyCache[KID]
 		if k, ok := c.config.PublicKeyCache[kid]; ok {
@@ -71,27 +73,44 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 }
 
 // parseAuthClaims parses jwtAuthN claims post signature validation.
-func parseAuthClaims(token *jwt.Token) (*AuthClaims, error) {
+func parseAuthClaims(token *jwt.Token) (*library.AuthClaims, error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return nil, errors.New("could not create token claims")
 	}
 
+	logrus.Infof("claims:IAT %T", claims["iat"])
+	logrus.Infof("claims:TYPE %T", claims["tokenType"])
+	logrus.Infof("claims:EXP %T", claims["exp"])
+	logrus.Infof("claims:SUB %T", claims["sub"])
+
 	iatTime, ok := claims["iat"].(float64)
+
 	if !ok {
 		return nil, errors.New("iat claim is of invalid type")
 	}
-
+	it := int64(iatTime)
+	//time.Unix(int64(expTime), 0),
 	expTime, ok := claims["exp"].(float64)
 	if !ok {
 		return nil, errors.New("exp claim is of invalid type")
 	}
+	et := int64(expTime)
+	tt, ok := claims["tokenType"].(string)
+	if !ok {
+		return nil, errors.New("token claim is of invalid type")
+	}
 
-	return &AuthClaims{
-		TokenType: claims["tokenType"].(string),
-		Iat:       time.Unix(int64(iatTime), 0),
-		Exp:       time.Unix(int64(expTime), 0),
-		Sub:       claims["sub"].(string),
+	s, ok := claims["sub"].(string)
+	if !ok {
+		return nil, errors.New("subject claim is of invalid type")
+	}
+
+	return &library.AuthClaims{
+		TokenType: &tt,
+		Iat:       &it,
+		Exp:       &et,
+		Sub:       &s,
 	}, nil
 }
 
