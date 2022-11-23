@@ -34,6 +34,7 @@ package router
 import (
 	"github.com/go-vela/server/api"
 	"github.com/go-vela/server/router/middleware"
+	"github.com/go-vela/server/router/middleware/auth"
 	"github.com/go-vela/server/router/middleware/org"
 	"github.com/go-vela/server/router/middleware/repo"
 	"github.com/go-vela/server/router/middleware/user"
@@ -73,7 +74,7 @@ func Load(options ...gin.HandlerFunc) *gin.Engine {
 	// Refresh Access Token endpoint
 	r.GET("/token-refresh", api.RefreshAccessToken)
 
-	r.POST("/system-refresh", api.SystemRefresh)
+	r.POST("/system-refresh", auth.MustValidToken(), api.SystemRefresh)
 
 	// Metric endpoint
 	r.GET("/metrics", api.CustomMetrics, gin.WrapH(api.BaseMetrics()))

@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-vela/server/router/middleware/auth"
 	"github.com/go-vela/server/router/middleware/user"
+	"github.com/go-vela/server/tokenmanager"
 
 	"github.com/go-vela/server/database"
 	"github.com/go-vela/server/router/middleware/worker"
@@ -339,4 +341,70 @@ func DeleteWorker(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, fmt.Sprintf("worker %s deleted", w.GetHostname()))
+}
+
+func RegisterWorker(c *gin.Context) {
+	{
+		type rr struct {
+			Hostname  string `json:"hostname"`
+			AuthToken string `json:"authtoken"`
+		}
+		// capture middleware values
+		u := user.Retrieve(c)
+		t := c.Request.Header.Get("Authorization")
+
+		// capture body from API request
+		input := new(library.Worker)
+
+		err := c.Bind(input)
+		if err != nil {
+			retErr := fmt.Errorf("unable to decode JSON for new worker: %w", err)
+
+			util.HandleError(c, http.StatusBadRequest, retErr)
+
+			return
+		}
+
+		var sub string
+		claims := auth.FromContext(c)
+		if claims == nil {
+			retErr := fmt.Errorf("no claims found in context")
+			util.HandleError(c, http.StatusInternalServerError, retErr)
+			return
+		}
+		sub = claims.Sub
+		nt, err := tokenmanager.FromContext(c).MintToken(c, "Auth", sub)
+		if err != nil {
+			retErr := fmt.Errorf("unable to mint new token for refresh: %s", err)
+			util.HandleError(c, http.StatusUnauthorized, retErr)
+			return
+		}
+		if err = tokenmanager.FromContext(c).InvalidateToken(c, t); err != nil {
+			retErr := fmt.Errorf("unable add token for to invalidation db: %s", err)
+			util.HandleError(c, http.StatusUnauthorized, retErr)
+			return
+		}
+
+		// update engine logger with API metadata
+		//
+		// https://pkg.go.dev/github.com/sirupsen/logrus?tab=doc#Entry.WithFields
+		logrus.WithFields(logrus.Fields{
+			"user":   u.GetName(),
+			"worker": input.GetHostname(),
+		}).Infof("creating new worker %s", input.GetHostname())
+
+		err = database.FromContext(c).CreateWorker(input)
+		if err != nil {
+			retErr := fmt.Errorf("unable to create worker: %w", err)
+			util.HandleError(c, http.StatusInternalServerError, retErr)
+			return
+		}
+
+		rs := rr{
+			Hostname:  input.GetHostname(),
+			AuthToken: nt,
+		}
+		c.JSON(http.StatusCreated, rs)
+	}
+
 }
