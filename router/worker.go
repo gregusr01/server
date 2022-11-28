@@ -27,7 +27,6 @@ func WorkerHandlers(base *gin.RouterGroup) {
 	workers := base.Group("/workers")
 	{
 		workers.POST("", user.Establish(), perm.MustPlatformAdmin(), middleware.Payload(), api.CreateWorker)
-		workers.POST("/register", middleware.Payload(), auth.MustValidToken(), auth.MustRegistration(), api.RegisterWorker)
 		workers.GET("", user.Establish(), api.GetWorkers)
 
 		// Worker endpoints
@@ -35,11 +34,20 @@ func WorkerHandlers(base *gin.RouterGroup) {
 		{
 			w.GET("", user.Establish(), worker.Establish(), api.GetWorker)
 			w.PUT("", user.Establish(), perm.MustPlatformAdmin(), worker.Establish(), api.UpdateWorker)
-			w.PUT("/auth", auth.MustValidToken(), auth.MustAuth(), worker.EstablishWithAuth(), api.UpdateWorker)
-
 			w.DELETE("", user.Establish(), perm.MustPlatformAdmin(), worker.Establish(), api.DeleteWorker)
-			w.DELETE("/auth", auth.MustValidToken(), auth.MustAuth(), worker.EstablishWithAuth(), api.DeleteWorker)
-
 		} // end of worker endpoints
+
+		wa := workers.Group("/auth")
+		{
+			wa.POST("", middleware.Payload(), auth.MustValidToken(), auth.MustRegistration(), api.RegisterWorker)
+			wa.GET("", auth.MustValidToken(), auth.MustAuth(), api.GetWorkers)
+
+			ww := wa.Group("/:worker")
+			{
+				ww.GET("", auth.MustValidToken(), auth.MustAuth(), worker.EstablishWithAuth(), api.GetWorker)
+				ww.PUT("", auth.MustValidToken(), auth.MustAuth(), worker.EstablishWithAuth(), api.UpdateWorker)
+				ww.DELETE("", auth.MustValidToken(), auth.MustAuth(), worker.EstablishWithAuth(), api.DeleteWorker)
+			}
+		}
 	} // end of workers endpoints
 }
