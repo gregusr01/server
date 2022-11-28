@@ -369,10 +369,15 @@ func RegisterWorker(c *gin.Context) {
 		claims := auth.FromContext(c)
 		if claims == nil {
 			retErr := fmt.Errorf("no claims found in context")
-			util.HandleError(c, http.StatusInternalServerError, retErr)
+			util.HandleError(c, http.StatusUnauthorized, retErr)
 			return
 		}
 		sub = claims.Sub
+		if claims.Sub != *input.Hostname {
+			retErr := fmt.Errorf("hostname for worker does not match")
+			util.HandleError(c, http.StatusUnauthorized, retErr)
+			return
+		}
 		nt, err := tokenmanager.FromContext(c).MintToken(c, "Auth", sub)
 		if err != nil {
 			retErr := fmt.Errorf("unable to mint new token for refresh: %s", err)
