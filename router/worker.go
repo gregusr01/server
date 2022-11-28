@@ -35,10 +35,10 @@ func WorkerHandlers(base *gin.RouterGroup) {
 		{
 			w.GET("", user.Establish(), worker.Establish(), api.GetWorker)
 			w.PUT("", user.Establish(), perm.MustPlatformAdmin(), worker.Establish(), api.UpdateWorker)
-			w.PUT("/auth", worker.Establish(), auth.MustValidToken(), auth.MustAuth(), api.UpdateWorker)
+			w.PUT("/auth", auth.MustValidToken(), auth.MustAuth(), worker.EstablishWithAuth(), api.UpdateWorker)
 
 			w.DELETE("", user.Establish(), perm.MustPlatformAdmin(), worker.Establish(), api.DeleteWorker)
-			w.DELETE("/auth", worker.Establish(), auth.MustValidToken(), auth.MustAuth(), api.DeleteWorker)
+			w.DELETE("/auth", auth.MustValidToken(), auth.MustAuth(), worker.EstablishWithAuth(), api.DeleteWorker)
 
 		} // end of worker endpoints
 	} // end of workers endpoints

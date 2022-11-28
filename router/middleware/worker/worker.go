@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-vela/server/database"
+	"github.com/go-vela/server/router/middleware/auth"
 	"github.com/go-vela/server/util"
 	"github.com/go-vela/types/library"
 	"github.com/sirupsen/logrus"
@@ -57,12 +58,12 @@ func EstablishWithAuth() gin.HandlerFunc {
 			return
 		}
 
-		logrus.Debug("Comparing provided worker from token", wt)
+		logrus.Debug("Comparing provided worker from token", wParam)
 
-		wt := FromContext(c)
-		hn := wt.Hostname
-		if hn != wParam {
-			retErr := fmt.Errorf("Worker %s is not authorized to perform this request for %s", hn, wParam)
+		claims := auth.FromContext(c)
+
+		if claims.Sub != wParam {
+			retErr := fmt.Errorf("Worker %s is not authorized to perform this request for %s", claims.Sub, wParam)
 			util.HandleError(c, http.StatusUnauthorized, retErr)
 
 			return
