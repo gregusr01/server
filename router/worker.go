@@ -10,6 +10,7 @@ import (
 	"github.com/go-vela/server/router/middleware"
 	"github.com/go-vela/server/router/middleware/auth"
 	"github.com/go-vela/server/router/middleware/perm"
+	"github.com/go-vela/server/router/middleware/user"
 	"github.com/go-vela/server/router/middleware/worker"
 )
 
@@ -25,19 +26,19 @@ func WorkerHandlers(base *gin.RouterGroup) {
 	// Workers endpoints
 	workers := base.Group("/workers")
 	{
-		workers.POST("", perm.MustPlatformAdmin(), middleware.Payload(), api.CreateWorker)
-		workers.POST("/register", perm.MustPlatformAdmin(), middleware.Payload(), auth.MustValidToken(), auth.MustRegistration(), api.RegisterWorker)
-		workers.GET("", api.GetWorkers)
+		workers.POST("", user.Establish(), perm.MustPlatformAdmin(), middleware.Payload(), api.CreateWorker)
+		workers.POST("/register", middleware.Payload(), auth.MustValidToken(), auth.MustRegistration(), api.RegisterWorker)
+		workers.GET("", user.Establish(), api.GetWorkers)
 
 		// Worker endpoints
 		w := workers.Group("/:worker")
 		{
-			w.GET("", worker.Establish(), api.GetWorker)
-			w.PUT("", perm.MustPlatformAdmin(), worker.Establish(), api.UpdateWorker)
-			w.PUT("/auth", perm.MustPlatformAdmin(), worker.Establish(), auth.MustValidToken(), auth.MustAuth(), api.UpdateWorker)
+			w.GET("", user.Establish(), worker.Establish(), api.GetWorker)
+			w.PUT("", user.Establish(), perm.MustPlatformAdmin(), worker.Establish(), api.UpdateWorker)
+			w.PUT("/auth", worker.Establish(), auth.MustValidToken(), auth.MustAuth(), api.UpdateWorker)
 
-			w.DELETE("", perm.MustPlatformAdmin(), worker.Establish(), api.DeleteWorker)
-			w.DELETE("/auth", perm.MustPlatformAdmin(), worker.Establish(), auth.MustValidToken(), auth.MustAuth(), api.DeleteWorker)
+			w.DELETE("", user.Establish(), perm.MustPlatformAdmin(), worker.Establish(), api.DeleteWorker)
+			w.DELETE("/auth", worker.Establish(), auth.MustValidToken(), auth.MustAuth(), api.DeleteWorker)
 
 		} // end of worker endpoints
 	} // end of workers endpoints
