@@ -7,6 +7,7 @@ package signingkeys
 import (
 	"time"
 
+	"github.com/go-vela/types/database"
 	"github.com/sirupsen/logrus"
 )
 
@@ -17,7 +18,7 @@ func (e *engine) DeleteExpiredKeys(tokenCleanupDuration time.Duration) error {
 
 	ts := time.Now().Add(-tokenCleanupDuration).Unix()
 
-	var sk signingKey
+	var sk = new(database.SigningKey)
 
 	// send query to the database
 	return e.client.

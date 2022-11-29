@@ -5,8 +5,9 @@
 package token
 
 import (
-	"database/sql"
 	"time"
+
+	"github.com/go-vela/types/database"
 )
 
 // DeleteInvalidTokens deletes stale invalid tokens from the database.
@@ -16,12 +17,12 @@ func (e *engine) DeleteInvalidTokens(invalidTokenTTL time.Duration) error {
 	ts := time.Now().Add(-invalidTokenTTL).Unix()
 
 	//token struct - this should be added to library later
-	type token struct {
-		TokenHash sql.NullString `sql:"token_hash"`
-		Timestamp sql.NullInt64  `sql:"timestamp"`
-	}
+	// type token struct {
+	// 	TokenHash sql.NullString `sql:"token_hash"`
+	// 	Timestamp sql.NullInt64  `sql:"timestamp"`
+	// }
 
-	var tk token
+	var tk = new(database.InvalidToken)
 
 	// send query to the database
 	return e.client.

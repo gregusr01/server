@@ -8,18 +8,20 @@ package token
 import (
 	"database/sql"
 	"time"
+
+	"github.com/go-vela/types/database"
 )
 
 // InvalidateToken adds a token hash to the token_invalidate database.
 func (e *engine) InvalidateToken(t string) error {
 	e.logger.Tracef("Invalidating token")
 
-	type token struct {
-		TokenHash sql.NullString `sql:"token_hash"`
-		Timestamp sql.NullInt64  `sql:"timestamp"`
-	}
+	// type token struct {
+	// 	TokenHash sql.NullString `sql:"token_hash"`
+	// 	Timestamp sql.NullInt64  `sql:"timestamp"`
+	// }
 
-	tk := token{
+	tk := database.InvalidToken{
 		TokenHash: sql.NullString{String: t, Valid: true},
 		Timestamp: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	}

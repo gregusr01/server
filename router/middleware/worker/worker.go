@@ -62,8 +62,8 @@ func EstablishWithAuth() gin.HandlerFunc {
 
 		claims := auth.FromContext(c)
 
-		if claims.Sub != wParam {
-			retErr := fmt.Errorf("Worker %s is not authorized to perform this request for %s", claims.Sub, wParam)
+		if *claims.Sub != wParam {
+			retErr := fmt.Errorf("Worker %s is not authorized to perform this request for %s", *claims.Sub, wParam)
 			util.HandleError(c, http.StatusUnauthorized, retErr)
 
 			return

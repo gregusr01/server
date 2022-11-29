@@ -5,8 +5,9 @@
 package token
 
 import (
-	"database/sql"
 	"errors"
+
+	"github.com/go-vela/types/database"
 )
 
 // GetInvalidToken checks for an existing token from the database.
@@ -14,12 +15,12 @@ func (e *engine) GetInvalidToken(t string) error {
 	e.logger.Tracef("getting token hash from the database")
 
 	//token struct - this should be added to library later
-	type token struct {
-		TokenHash sql.NullString `sql:"token_hash"`
-		Timestamp sql.NullInt64  `sql:"timestamp"`
-	}
+	// type token struct {
+	// 	TokenHash sql.NullString `sql:"token_hash"`
+	// 	Timestamp sql.NullInt64  `sql:"timestamp"`
+	// }
 
-	var tk token
+	var tk = new(database.InvalidToken)
 
 	// send query to the database and store result in variable
 	err := e.client.

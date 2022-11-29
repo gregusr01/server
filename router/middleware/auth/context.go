@@ -7,7 +7,7 @@ package auth
 import (
 	"context"
 
-	"github.com/go-vela/server/tokenmanager/minter"
+	"github.com/go-vela/types/library"
 )
 
 const key = "auth_token"
@@ -18,12 +18,12 @@ type Setter interface {
 }
 
 // FromContext returns the Worker associated with this context.
-func FromContext(c context.Context) *minter.AuthClaims {
+func FromContext(c context.Context) *library.AuthClaims {
 	value := c.Value(key)
 	if value == nil {
 		return nil
 	}
-	cl, ok := value.(*minter.AuthClaims)
+	cl, ok := value.(*library.AuthClaims)
 	if !ok {
 		return nil
 	}
@@ -32,6 +32,6 @@ func FromContext(c context.Context) *minter.AuthClaims {
 
 // ToContext adds the Worker to this context if it supports
 // the Setter interface.
-func ToContext(c Setter, cl *minter.AuthClaims) {
+func ToContext(c Setter, cl *library.AuthClaims) {
 	c.Set(key, cl)
 }
