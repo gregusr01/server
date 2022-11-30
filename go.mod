@@ -139,3 +139,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/klog/v2 v2.70.1 // indirect
 )
+
+replace github.com/go-vela/types => /Users/z002jxm/go/src/github.com/originaldrock/types

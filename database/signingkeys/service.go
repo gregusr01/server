@@ -7,6 +7,8 @@ package signingkeys
 import (
 	"crypto/rsa"
 	"time"
+
+	"github.com/go-vela/types/database"
 )
 
 // SigningKeyService represents the Vela interface for token manager
@@ -28,7 +30,7 @@ type SigningKeyService interface {
 	GetSigningKey(string) (*rsa.PublicKey, error)
 
 	// ListSigningKeys defines a function that returns all valid signing keys from the database
-	ListSigningKeys() ([]signingKey, error)
+	ListSigningKeys() (*[]database.SigningKey, error)
 
 	// DeleteExpiredKeys defines a function that deletes stale signing keys from the database
 	DeleteExpiredKeys(time.Duration) error

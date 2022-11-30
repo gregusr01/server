@@ -30,7 +30,7 @@ func MustValidToken() gin.HandlerFunc {
 func MustRegistration() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cl := FromContext(c)
-		if cl.TokenType != "Registration" {
+		if *cl.TokenType != "Registration" {
 			retErr := fmt.Errorf("the type of token is not of type registration")
 			util.HandleError(c, http.StatusUnauthorized, retErr)
 			return
@@ -42,7 +42,7 @@ func MustRegistration() gin.HandlerFunc {
 func MustAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cl := FromContext(c)
-		if cl.TokenType != "Auth" {
+		if *cl.TokenType != "Auth" {
 			retErr := fmt.Errorf("the type of token is not of type auth")
 			util.HandleError(c, http.StatusUnauthorized, retErr)
 			return

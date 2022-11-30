@@ -9,6 +9,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 
+	"github.com/go-vela/types/database"
 	"github.com/sirupsen/logrus"
 )
 
@@ -16,7 +17,7 @@ import (
 func (e *engine) GetSigningKey(k string) (*rsa.PublicKey, error) {
 	e.logger.Tracef("attempting to retrieve key %s from database", k)
 
-	var sk signingKey
+	var sk = new(database.SigningKey)
 
 	// send query to the database and store result in variable
 	err := e.client.

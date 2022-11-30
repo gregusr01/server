@@ -372,8 +372,8 @@ func RegisterWorker(c *gin.Context) {
 			util.HandleError(c, http.StatusUnauthorized, retErr)
 			return
 		}
-		sub = claims.Sub
-		if claims.Sub != *input.Hostname {
+		sub = *claims.Sub
+		if *claims.Sub != *input.Hostname {
 			retErr := fmt.Errorf("hostname for worker does not match")
 			util.HandleError(c, http.StatusUnauthorized, retErr)
 			return

@@ -10,19 +10,20 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-vela/types/library"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
 )
 
-type AuthClaims struct {
-	TokenType string
-	Iat       time.Time
-	Exp       time.Time
-	Sub       string
-}
+// type AuthClaims struct {
+// 	TokenType string
+// 	Iat       time.Time
+// 	Exp       time.Time
+// 	Sub       string
+// }
 
 // ValidateToken validates a token using the public key
-func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, error) {
+func (c *client) ValidateToken(ctx context.Context, token string) (*library.AuthClaims, error) {
 	//parse and validate given token
 	tkn, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		//pull kid from token header
@@ -68,7 +69,7 @@ func (c *client) ValidateToken(ctx context.Context, token string) (*AuthClaims, 
 }
 
 // parseAuthClaims parses jwtAuthN claims post signature validation.
-func parseAuthClaims(token *jwt.Token) (*AuthClaims, error) {
+func parseAuthClaims(token *jwt.Token) (*library.AuthClaims, error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return nil, errors.New("could not create token claims")
@@ -86,12 +87,13 @@ func parseAuthClaims(token *jwt.Token) (*AuthClaims, error) {
 		return nil, errors.New("exp claim is of invalid type")
 	}
 
-	return &AuthClaims{
-		TokenType: claims["tokenType"].(string),
-		Iat:       time.Unix(int64(iatTime), 0),
-		Exp:       time.Unix(int64(expTime), 0),
-		Sub:       claims["sub"].(string),
-	}, nil
+	var ac = new(library.AuthClaims)
+	ac.SetTokenType(claims["tokenType"].(string))
+	ac.SetIat(time.Unix(int64(iatTime), 0))
+	ac.SetExp(time.Unix(int64(expTime), 0))
+	ac.SetSubject(claims["sub"].(string))
+
+	return ac, nil
 }
 
 // Kid returns the key-identifier (kid) value of the key that signed the token
